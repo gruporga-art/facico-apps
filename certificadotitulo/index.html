@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Trámite de Credencial - Facico UV</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
+        .widget-credencial-uvm { max-width: 900px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .widget-header { background: linear-gradient(135deg, #18529D 0%, #28AD56 100%); color: white; padding: 25px; text-align: center; }
+        .widget-header h2 { font-size: 22px; margin-bottom: 5px; }
+        .widget-header p { opacity: 0.9; font-size: 14px; }
+        .widget-body { padding: 25px; }
+        .campo-busqueda { display: flex; gap: 10px; margin-bottom: 20px; }
+        .campo-busqueda input { flex: 1; padding: 14px 20px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; }
+        .campo-busqueda input:focus { outline: none; border-color: #18529D; box-shadow: 0 0 0 3px rgba(24, 82, 157, 0.1); }
+        .btn-consultar { padding: 14px 30px; background: #18529D; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-consultar:hover { background: #143f7a; transform: translateY(-2px); }
+        .btn-consultar:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .resultado { margin-top: 20px; display: none; animation: aparecer 0.4s ease; }
+        .resultado.visible { display: block; }
+        @keyframes aparecer { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .mensaje-info { background: #e3f2fd; border-left: 4px solid #18529D; padding: 12px 15px; border-radius: 5px; margin-bottom: 15px; color: #0d47a1; }
+        .mensaje-error { background: #fef2f2; border-left: 4px solid #dc2626; padding: 15px; border-radius: 5px; color: #991b1b; }
+        .result-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+        .result-table th, .result-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+        .result-table th { background-color: #18529D; color: white; font-weight: 600; text-transform: uppercase; font-size: 12px; }
+        .result-table tr:hover { background-color: #f8f9fa; }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .status-entregado { background-color: #28AD56; color: white; }
+        .status-proceso { background-color: #18529D; color: white; }
+        .status-default { background-color: #e0e0e0; color: #333; }
+        .cargando { text-align: center; padding: 30px; }
+        .spinner { display: inline-block; width: 35px; height: 35px; border: 4px solid #e0e0e0; border-top-color: #18529D; border-radius: 50%; animation: girar 1s linear infinite; }
+        @keyframes girar { to { transform: rotate(360deg); } }
+        .footer-info { text-align: center; padding: 15px; background: #f8f9fa; font-size: 12px; color: #666; border-top: 1px solid #e0e0e0; }
+        @media (max-width: 600px) { .campo-busqueda { flex-direction: column; } .result-table { display: block; overflow-x: auto; } }
+    </style>
+</head>
+<body>
+<div class="widget-credencial-uvm">
+    <div class="widget-header">
+        <h2>📇 Consulta de Trámite de Credencial</h2>
+        <p>Verifica el historial y estatus de tus trámites</p>
+    </div>
+    <div class="widget-body">
+        <div class="campo-busqueda">
+            <input type="text" id="inputMatricula" placeholder="Ingresa tu matrícula (Ej: S15000671)" onkeypress="if(event.key==='Enter')consultarEstatus()">
+            <button class="btn-consultar" onclick="consultarEstatus()" id="btnConsultar">Consultar</button>
+        </div>
+        <div id="resultado" class="resultado"></div>
+    </div>
+    <div class="footer-info">Sistema de Consulta de Credenciales Facico – UV</div>
+</div>
+<script>
+const SHEET_ID = '1Fwh6sCnuzNQrxn9HAcGhRHUCaYe-l5O1';
+const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vStlJ348m-ynQqm-9mfnuhviTK23bajtJ0tbZXpsru2VfIbnJN30ZQ1565SIu8sng/pub?gid=813072558&single=true&output=csv';
+  async function consultarEstatus() {
+    const inputMatricula = document.getElementById('inputMatricula');
+    const btnConsultar = document.getElementById('btnConsultar');
+    const resultado = document.getElementById('resultado');
+    const matricula = inputMatricula.value.trim().toUpperCase();
+    if (!matricula) { mostrarError(resultado, '⚠️ Por favor ingresa tu matrícula.'); return; }
+    if (!/^S\d{8}$/.test(matricula)) { mostrarError(resultado, '⚠️ Formato inválido. Debe ser S + 8 números (Ej: S15000671).'); return; }
+    btnConsultar.disabled = true; btnConsultar.textContent = 'Buscando...';
+    resultado.innerHTML = `<div class="cargando"><div class="spinner"></div><p style="margin-top:15px;color:#666;">Consultando...</p></div>`;
+    resultado.classList.add('visible');
+    try {
+        const response = await fetch(URL_CSV, { cache: 'no-cache' });
+        if (!response.ok) throw new Error('No se pudo acceder a la base de datos.');
+        const textoCSV = await response.text();
+        const registros = parsearCSV(textoCSV);
+        if (registros.length === 0) throw new Error('Base de datos vacía.');
+        const tramitesEncontrados = registros.filter(r => {
+            const matriculaRegistro = obtenerValor(r, ['matricula', 'matrícula']).toUpperCase();
+            return matriculaRegistro === matricula;
+        });
+        if (tramitesEncontrados.length === 0) { mostrarError(resultado, `❌ No se encontraron trámites con la matrícula: <strong>${matricula}</strong>`); return; }
+        tramitesEncontrados.sort((a, b) => {
+            const fechaA = parsearFecha(obtenerValor(a, ['fecha de tramite', 'fecha']));
+            const fechaB = parsearFecha(obtenerValor(b, ['fecha de tramite', 'fecha']));
+            return fechaB - fechaA;
+        });
+        mostrarTabla(resultado, tramitesEncontrados);
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarError(resultado, `❌ Error: ${error.message}`);
+    } finally {
+        btnConsultar.disabled = false; btnConsultar.textContent = 'Consultar';
+    }
+}
+function obtenerValor(registro, posiblesNombres) {
+    const claves = Object.keys(registro);
+    for (const nombre of posiblesNombres) {
+        const encontrada = claves.find(k => k.toLowerCase().trim() === nombre.toLowerCase().trim());
+        if (encontrada) return registro[encontrada];
+    }
+    for (const nombre of posiblesNombres) {
+        const encontrada = claves.find(k => k.toLowerCase().includes(nombre.toLowerCase()));
+        if (encontrada) return registro[encontrada];
+    }
+    return 'No disponible';
+}
+function parsearCSV(texto) {
+    const lineas = texto.split('\n').filter(l => l.trim() !== '');
+    if (lineas.length < 2) return [];
+    const encabezados = parsearLinea(lineas[0]);
+    const registros = [];
+    for (let i = 1; i < lineas.length; i++) {
+        const valores = parsearLinea(lineas[i]);
+        if (valores.length >= encabezados.length) {
+            const reg = {};
+            encabezados.forEach((enc, idx) => { reg[enc.trim()] = valores[idx] ? valores[idx].trim() : ''; });
+            if (reg[Object.keys(reg)[0]]) registros.push(reg);
+        }
+    }
+    return registros;
+}
+function parsearLinea(linea) {
+    const valores = []; let actual = '', comillas = false;
+    for (let i = 0; i < linea.length; i++) {
+        const char = linea[i];
+        if (char === '"') { if (comillas && linea[i + 1] === '"') { actual += '"'; i++; } else { comillas = !comillas; } }
+        else if (char === ',' && !comillas) { valores.push(actual); actual = ''; }
+        else { actual += char; }
+    }
+    valores.push(actual); return valores;
+}
+function parsearFecha(fechaStr) {
+    if (!fechaStr || fechaStr === 'No disponible') return new Date(0);
+    const limpia = String(fechaStr).split(' ')[0].trim();
+    const partes = limpia.split(/[\/\-]/);
+    if (partes.length === 3) {
+        let d = parseInt(partes[0], 10), m = parseInt(partes[1], 10) - 1, y = parseInt(partes[2], 10);
+        if (d > 12) return new Date(y, m, d);
+        if (m + 1 > 12) return new Date(y, d - 1, m + 1);
+        return new Date(y, m, d);
+    }
+    const fallback = new Date(fechaStr);
+    return isNaN(fallback.getTime()) ? new Date(0) : fallback;
+}
+function getStatusClass(estatus) {
+    const e = estatus.toLowerCase();
+    if (e.includes('entreg')) return 'status-entregado';
+    if (e.includes('recib') || e.includes('proceso') || e.includes('tramite')) return 'status-proceso';
+    return 'status-default';
+}
+function mostrarTabla(contenedor, tramites) {
+    const cantidad = tramites.length;
+    let html = `<div class="mensaje-info">📌 Se encontraron <strong>${cantidad} trámite(s)</strong> para esta matrícula, ordenados del más reciente al más antiguo.</div>`;
+    html += `<table class="result-table"><thead><tr><th>Nombre</th><th>Matrícula</th><th>Trámite</th><th>Estatus</th><th>Requiere</th><th>Fecha de Trámite</th></tr></thead><tbody>`;
+    tramites.forEach(t => {
+        const nombre = obtenerValor(t, ['nombre']);
+        const matricula = obtenerValor(t, ['matricula', 'matrícula']);
+        const tramite = obtenerValor(t, ['tramite', 'trámite', 'tipo']);
+        const estatus = obtenerValor(t, ['estatus', 'estado']);
+        const requiere = obtenerValor(t, ['requiere', 'observacion', 'nota']);
+        const fecha = obtenerValor(t, ['fecha de tramite', 'fecha']);
+        html += `<tr><td>${nombre}</td><td><strong>${matricula}</strong></td><td>${tramite}</td><td><span class="status-badge ${getStatusClass(estatus)}">${estatus}</span></td><td>${requiere}</td><td>${fecha}</td></tr>`;
+    });
+    html += `</tbody></table>`;
+    contenedor.innerHTML = html;
+    contenedor.classList.add('visible');
+}
+function mostrarError(contenedor, mensaje) {
+    contenedor.innerHTML = `<div class="mensaje-error">${mensaje}</div>`;
+    contenedor.classList.add('visible');
+}
+document.getElementById('inputMatricula').addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.target.value = ''; document.getElementById('resultado').classList.remove('visible'); }
+});
+window.addEventListener('load', () => document.getElementById('inputMatricula').focus());
+</script>
+</body>
+</html>
