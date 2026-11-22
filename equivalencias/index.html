@@ -1,1 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Equivalencias LCC - Plan 2004 ↔ Plan 2025 | Universidad Veracruzana</title>
+<style>
+  :root {
+    --azul-uv: #18529D;
+    --azul-uv-dark: #0f3a73;
+    --azul-uv-light: #e8f0fa;
+    --verde-uv: #28AD56;
+    --verde-uv-dark: #1d8240;
+    --verde-uv-light: #e6f7ec;
+    --alerta: #d97706;
+    --alerta-bg: #fff8eb;
+    --error: #c53030;
+    --error-bg: #fff5f5;
+    --gris-texto: #4a5568;
+    --gris-claro: #f5f7fa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, var(--azul-uv) 0%, var(--verde-uv) 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: #333;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+  header {
+    background: var(--azul-uv);
+    color: #fff;
+    padding: 24px 20px;
+    text-align: center;
+    border-bottom: 4px solid var(--verde-uv);
+  }
+  header h1 { font-size: 1.3em; margin-bottom: 6px; line-height: 1.3; }
+  header p { opacity: 0.95; font-size: 0.9em; }
+  header .uv-badge {
+    display: inline-block;
+    background: var(--verde-uv);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .controls {
+    padding: 20px;
+    background: var(--gris-claro);
+    border-bottom: 1px solid #e1e4e8;
+  }
+  .controls label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: var(--azul-uv);
+    font-size: 0.95em;
+  }
+  .controls select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 16px;
+    background: #fff;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2318529D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+  }
+  .direction-info {
+    background: var(--azul-uv-light);
+    border-left: 4px solid var(--azul-uv);
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: var(--azul-uv-dark);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .btn-seleccionar {
+    width: 100%;
+    padding: 14px;
+    background: var(--azul-uv);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+  .btn-seleccionar:active { background: var(--azul-uv-dark); transform: scale(0.98); }
+  .materia-seleccionada {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--verde-uv-light);
+    border: 1px solid var(--verde-uv);
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .materia-seleccionada.activo { display: flex; }
+  .materia-seleccionada span {
+    font-size: 0.9em;
+    color: var(--verde-uv-dark);
+    font-weight: 500;
+    flex: 1;
+    margin-right: 10px;
+  }
+  .btn-cambiar {
+    background: transparent;
+    border: 1px solid var(--verde-uv-dark);
+    color: var(--verde-uv-dark);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.activo { display: flex; }
+  .modal-content {
+    background: #fff;
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; padding: 20px; }
+    .modal-content { border-radius: 16px; max-height: 80vh; }
+  }
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-header h3 { font-size: 1.1em; color: var(--azul-uv); }
+  .btn-cerrar {
+    background: none; border: none; font-size: 1.5em; color: #718096; cursor: pointer; padding: 4px 8px;
+  }
+  .modal-search {
+    padding: 12px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+  }
+  .modal-search input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+  }
+  .modal-search input:focus { border-color: var(--azul-uv); }
+  .modal-list {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .modal-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.95em;
+    color: #2d3748;
+    cursor: pointer;
+    transition: background 0.15s;
+    line-height: 1.4;
+  }
+  .modal-item:active, .modal-item:hover { background: var(--azul-uv-light); }
+  .modal-item strong { color: var(--azul-uv); display: block; margin-bottom: 2px; }
+  .modal-item small { color: #718096; font-size: 0.85em; }
+  .modal-empty {
+    padding: 30px 20px;
+    text-align: center;
+    color: #718096;
+    font-style: italic;
+  }
+  .result { padding: 24px 20px; min-height: 150px; }
+  .placeholder { text-align: center; color: #718096; padding: 30px 20px; font-style: italic; line-height: 1.5; }
+  .card {
+    background: #f8fafc;
+    border-left: 5px solid var(--azul-uv);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .card.destino { border-left-color: var(--verde-uv); }
+  .card h3 { color: var(--azul-uv); margin-bottom: 8px; font-size: 1.05em; }
+  .card.destino h3 { color: var(--verde-uv-dark); }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-right: 6px;
+    margin-top: 4px;
+  }
+  .badge-cred { background: var(--verde-uv-light); color: var(--verde-uv-dark); }
+  .badge-area { background: var(--azul-uv-light); color: var(--azul-uv-dark); }
+  .transferencia { background: var(--alerta-bg); border-left-color: var(--alerta); }
+  .transferencia h3 { color: var(--alerta); }
+  .no-equiv { background: var(--error-bg); border-left-color: var(--error); }
+  .no-equiv h3 { color: var(--error); }
+  .arrow { text-align: center; font-size: 1.5em; color: var(--verde-uv); margin: -4px 0; font-weight: bold; }
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--gris-claro);
+    font-size: 0.8em;
+    color: var(--gris-texto);
+    border-top: 3px solid var(--verde-uv);
+    line-height: 1.5;
+  }
+  footer strong { color: var(--azul-uv); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="uv-badge">UNIVERSIDAD VERACRUZANA</div>
+    <h1>📚 Licenciatura en Ciencias de la Comunicación - Equivalencias</h1>
+    <p>Consulta las equivalencias entre el Plan 2004 y el Plan 2025</p>
+  </header>
 
+  <div class="controls">
+    <label for="direccion">🔁 Opciones de plan para consulta:</label>
+    <select id="direccion">
+      <option value="2004a2025">Soy del Plan 2004 → quiero ver mi equivalencia en el Plan 2025</option>
+      <option value="2025a2004">Soy del Plan 2025 → quiero ver mi equivalencia en el Plan 2004</option>
+    </select>
+
+    <div class="direction-info" id="infoDireccion">
+      Selecciona un Plan para consultar la equivalencia.
+    </div>
+
+    <button class="btn-seleccionar" id="btnAbrirModal">
+      🔍 Seleccionar una experiencia educativa...
+    </button>
+
+    <div class="materia-seleccionada" id="materiaSeleccionada">
+      <span id="textoMateriaSeleccionada"></span>
+      <button class="btn-cambiar" id="btnCambiar">Cambiar</button>
+    </div>
+  </div>
+
+  <div class="result" id="resultado">
+    <div class="placeholder">
+      Selecciona un Plan para conocer su equivalente.
+    </div>
+  </div>
+
+  <footer>
+    <strong>Facultad de Ciencias y Técnicas de la Comunicación</strong><br>
+    Universidad Veracruzana · 2026<br>
+    <p><small>⚠️ La equivalencia definitiva se trámita en la Secretaría de la facultad.</small><br>
+    <small>⚜ Herramienta de apoyo diseñada por el docente <a href="mailto:alfreyes@tuv.mx">Dr. Alfredo Reyes Gutiérrez</a> para sus Tutorados.⚜</small></p>
+    <!-- ========================================================== -->
+<!--  Componente de Calificación con Estrellas y Contador de Visitas -->
+<!--  Diseñado para la Universidad Veracruzana                    -->
+<!-- ========================================================== -->
+
+<div style="max-width:800px; margin:20px auto; background:#fff; border-radius:12px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
+    <!-- Calificación con estrellas -->
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div style="display:flex; gap:4px;" id="starContainer">
+        <!-- Las estrellas se generan con JS -->
+      </div>
+      <span id="ratingText" style="font-size:0.95em; color:#18529D; font-weight:600;">5.0 / 5</span>
+      <span id="votesText" style="font-size:0.85em; color:#4a5568;">(1 voto)</span>
+    </div>
+
+    <!-- Contador de visitas -->
+    <div style="display:flex; align-items:center; gap:6px; font-size:0.95em; color:#4a5568;">
+      <span style="font-size:1.2em;">👁️</span>
+      <span><span id="visitorCount">0</span> visitas</span>
+    </div>
+  </div>
+
+  <p style="margin-top:10px; font-size:0.8em; color:#718096; border-top:1px solid #e2e8f0; padding-top:10px; display:flex; justify-content:space-between;">
+    <span>Estudiantes han utilizado esta herramienta</span>
+    <span id="lastVisit" style="font-size:0.75em;"></span>
+  </p>
+</div>
+
+<script>
+  (function() {
+    // --- Configuración de claves de localStorage ---
+    const STORAGE_KEY_RATING = 'uv_lcc_rating';
+    const STORAGE_KEY_VOTES = 'uv_lcc_votes';
+    const STORAGE_KEY_VISITS = 'uv_lcc_visits';
+
+    // --- Obtener o inicializar datos ---
+    let rating = parseFloat(localStorage.getItem(STORAGE_KEY_RATING)) || 0;
+    let votes = parseInt(localStorage.getItem(STORAGE_KEY_VOTES)) || 0;
+    let visits = parseInt(localStorage.getItem(STORAGE_KEY_VISITS)) || 0;
+
+    // Incrementar visitas (una vez por carga de página)
+    visits += 1;
+    localStorage.setItem(STORAGE_KEY_VISITS, visits);
+
+    // --- Actualizar UI del contador ---
+    document.getElementById('visitorCount').textContent = visits;
+
+    // Mostrar fecha/hora de la última visita (opcional)
+    const now = new Date();
+    const lastVisitStr = now.toLocaleString('es-MX', { hour12: false });
+    document.getElementById('lastVisit').textContent = 'Última visita: ' + lastVisitStr;
+
+    // --- Renderizar estrellas ---
+    const starContainer = document.getElementById('starContainer');
+    const ratingText = document.getElementById('ratingText');
+    const votesText = document.getElementById('votesText');
+
+    // Función para actualizar la visualización de estrellas
+    function renderStars(activeStars) {
+      starContainer.innerHTML = '';
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('span');
+        star.style.fontSize = '1.6rem';
+        star.style.cursor = 'pointer';
+        star.style.transition = 'transform 0.1s';
+        star.style.display = 'inline-block';
+        star.style.lineHeight = '1';
+        star.style.color = (i <= activeStars) ? '#fbbf24' : '#d1d5db'; // amarillo / gris
+        star.textContent = '★';
+        star.dataset.value = i;
+        star.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const selected = parseInt(this.dataset.value);
+          // Guardar nuevo voto
+          const newRating = (rating * votes + selected) / (votes + 1);
+          votes += 1;
+          rating = newRating;
+          localStorage.setItem(STORAGE_KEY_RATING, rating);
+          localStorage.setItem(STORAGE_KEY_VOTES, votes);
+          // Actualizar UI
+          renderStars(Math.round(rating));
+          ratingText.textContent = rating.toFixed(1) + ' / 5';
+          votesText.textContent = `(${votes} ${votes === 1 ? 'voto' : 'votos'})`;
+        });
+        // Efecto hover (opcional)
+        star.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.2)';
+        });
+        star.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+        });
+        starContainer.appendChild(star);
+      }
+    }
+
+    // Mostrar calificación inicial (redondeo para estrellas llenas)
+    const initialActive = Math.round(rating);
+    renderStars(initialActive);
+    ratingText.textContent = rating.toFixed(1) + ' / 5';
+    votesText.textContent = `(${votes} ${votes === 1 ? 'voto' : 'votos'})`;
+
+    // Si no hay votos, mostrar mensaje especial
+    if (votes === 0) {
+      ratingText.textContent = '5.0 / 5'; // valor por defecto
+      votesText.textContent = '(0 votos)';
+      // Las estrellas se muestran en gris (0 activas)
+      renderStars(0);
+    }
+
+    // Opcional: permitir resetear (solo para pruebas) - lo dejamos comentado
+    // document.addEventListener('dblclick', function() {
+    //   localStorage.removeItem(STORAGE_KEY_RATING);
+    //   localStorage.removeItem(STORAGE_KEY_VOTES);
+    //   location.reload();
+    // });
+
+  })();
+</script>
+  </footer>
+</div>
+
+<!-- Modal de Selección -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitulo">Seleccionar materia</h3>
+      <button class="btn-cerrar" id="btnCerrarModal">&times;</button>
+    </div>
+    <div class="modal-search">
+      <input type="text" id="modalBuscador" placeholder="Escribe para filtrar..." autocomplete="off">
+    </div>
+    <ul class="modal-list" id="modalLista">
+      <!-- Se llena dinámicamente -->
+    </ul>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATOS COMPLETOS DE EQUIVALENCIAS (71 registros del archivo Excel)
+// Incluye TODAS las materias del área básica, disciplinaria y terminal.
+// ============================================================
+const equivalencias = [
+  {m2004:"CULTURA E IDENTIDAD EN AMERICA LATINA I", cr2004:6, area2004:"Básica", m2025:"ESTUDIOS CULTURALES LATINOAMERICANOS", cr2025:6, area2025:"Básica"},
+  {m2004:"ECONOMIA Y COMUNICACION", cr2004:6, area2004:"Básica", m2025:"SOCIOECONOMIA DE LA COMUNICACION", cr2025:6, area2025:"Básica"},
+  {m2004:"INTRODUCCION A LA FILOSOFIA DE LA COMUNICACION", cr2004:6, area2004:"Básica", m2025:"FILOSOFIA DE LA COMUNICACION", cr2025:6, area2025:"Básica"},
+  {m2004:"CULTURA E IDENTIDAD EN AMERICA LATINA II", cr2004:6, area2004:"Disciplinaria", m2025:"COMUNICACION INTERCULTURAL", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"ETICA Y COMUNICACION", cr2004:6, area2004:"Disciplinaria", m2025:"ETICA Y COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"FILOSOFIA DE LA COMUNICACION", cr2004:6, area2004:"Disciplinaria", m2025:"FILOSOFIA Y PENSAMIENTO CONTEMPORANEO", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"HISTORIA CONTEMPORANEA DE MEXICO", cr2004:5, area2004:"Disciplinaria", m2025:"PERSPECTIVA HISTORICA DE LOS MEDIOS DE COMUNICACION EN MEXICO", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"PSICOLOGIA SOCIAL Y COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"COMUNICACION APLICADA EN PSICOLOGIA SOCIAL", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"REGIMEN JURIDICO DE LOS MEDIOS COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"MARCO LEGAL DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"SISTEMA POLITICO MEXICANO Y COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"ESTADO Y SOCIEDAD", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"INTRODUCCION A LA TEORIA DE LA COMUNICACION", cr2004:8, area2004:"Básica", m2025:"GENESIS Y EVOLUCION DE LA COMUNICACION", cr2025:8, area2025:"Básica"},
+  {m2004:"PSICOLOGIA COMUNICACION E INFORMACION", cr2004:8, area2004:"Básica", m2025:"TEORIAS PSICOLOGICAS EN LA COMUNICACION", cr2025:8, area2025:"Básica"},
+  {m2004:"COMUNICACION Y OPINION PUBLICA", cr2004:8, area2004:"Disciplinaria", m2025:"OPINION PUBLICA", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"SOCIOLOGIA DE LA COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"TENDENCIAS SOCIOLOGICAS DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"TEORIA DE LA COMUNICACION I", cr2004:8, area2004:"Disciplinaria", m2025:"TEORIAS CLASICAS DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"TEORIA DE LA COMUNICACION II", cr2004:8, area2004:"Disciplinaria", m2025:"ESTUDIOS CONTEMPORANEOS DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
+  {m2004:"TEORIAS DE LA ADMINISTRACION PARA LA COMUNICACION", cr2004:6, area2004:"Básica", m2025:"TEORIAS ADMINISTRATICAS PARA LA COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"COMUNICACION INTERNA EN LAS ORGANIZACIONES", cr2004:6, area2004:"Disciplinaria", m2025:"ENDOMARKETING", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"ESTRATEGIAS DE COMUNICACION CORPORATIVA", cr2004:4, area2004:"Disciplinaria", m2025:"COMUNICACION CORPORATIVA", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"PROYECTOS DE COMUNICACION Y DESARROLLO DE EMPRENDEDORES", cr2004:5, area2004:"Disciplinaria", m2025:"EMPRENDIMIENTO EN COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"RELACIONES PUBLICAS CORPORATIVAS", cr2004:6, area2004:"Disciplinaria", m2025:"RELACIONES PUBLICAS APLICADAS", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"TALLER DE FOTOGRAFIA I", cr2004:6, area2004:"Básica", m2025:"FOTOGRAFIA BASICA", cr2025:6, area2025:"Básica"},
+  {m2004:"TALLER DE FOTOGRAFIA II", cr2004:6, area2004:"Disciplinaria", m2025:"FOTOGRAFIA ESPECIALIZADA", cr2025:4, area2025:"Disciplinaria"},
+  {m2004:"TALLER DE TELEVISION Y VIDEO I", cr2004:5, area2004:"Disciplinaria", m2025:"PRINCIPIOS DE LA PRODUCCION AUDIOVISUAL", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"TALLER DE HIPERMEDIA I", cr2004:5, area2004:"Disciplinaria", m2025:"HIPERMEDIA", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"INTRODUCCION A LA TEORIA DEL LENGUAJE", cr2004:8, area2004:"Básica", m2025:"TEORIA DEL LENGUAJE", cr2025:8, area2025:"Básica"},
+  {m2004:"SEMIOTICA GENERAL", cr2004:8, area2004:"Disciplinaria", m2025:"SEMIOTICA SOCIAL", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"TEORIA DEL LENGUAJE", cr2004:8, area2004:"Disciplinaria", m2025:"DISCURSO Y PODER", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"TRADUCCION DE TEXTOS EN COMUNICACION", cr2004:4, area2004:"Disciplinaria", m2025:"CULTURA Y LINGUISTICA DE TEXTOS EN COMUNICACION", cr2025:4, area2025:"Disciplinaria"},
+  {m2004:"INTRODUCCION A LOS METODOS DE LAS CIENCIAS SOCIALES", cr2004:8, area2004:"Básica", m2025:"INVESTIGACION EN EL CAMPO DE LA COMUNICACION", cr2025:8, area2025:"Básica"},
+  {m2004:"INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"PLANEACION Y DISEÑO DE PROYECTOS DE INVESTIGACION", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"TECNICAS DE INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION", cr2004:6, area2004:"Disciplinaria", m2025:"LABORATORIO DE INVESTIGACION EN COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"GUIONISMO", cr2004:3, area2004:"Básica", m2025:"GUIONISMO", cr2025:4, area2025:"Básica"},
+  {m2004:"TALLER DE REDACCION: NOTA INFORMATIVA Y ENTREVISTA", cr2004:4, area2004:"Básica", m2025:"TEXTOS PERIODISTICOS INFORMATIVOS MULTIMEDIOS", cr2025:5, area2025:"Básica"},
+  {m2004:"TALLER DE REDACCION: CRONICA", cr2004:4, area2004:"Disciplinaria", m2025:"PERIODISMO NARRATIVO MULTIMEDIA", cr2025:4, area2025:"Disciplinaria"},
+  {m2004:"TALLER DE REDACCION: REPORTAJE", cr2004:4, area2004:"Disciplinaria", m2025:"PERIODISMO INTERPRETATIVO MULTIMEDIA", cr2025:4, area2025:"Disciplinaria"},
+  {m2004:"PERIODISMO DE INVESTIGACION", cr2004:6, area2004:"Disciplinaria", m2025:"PERIODISMO DE INVESTIGACION", cr2025:6, area2025:"Disciplinaria"},
+  {m2004:"TALLER DE DISEÑO EDITORIAL", cr2004:4, area2004:"Disciplinaria", m2025:"DISEÑO Y PRODUCCION EDITORIAL", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"COMUNICACION Y DESARROLLO ECONOMICO SUSTENTABLE", cr2004:5, area2004:"Disciplinaria", m2025:"ECONOMIA Y COMUNICACION PARA EL DESARROLLO SUSTENTABLE", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"PLANEACION Y COMUNICACION ESTRATEGICA", cr2004:8, area2004:"Disciplinaria", m2025:"COMUNICACION PARA EL DESARROLLO DEL TALENTO HUMANO", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"INTRODUCCION A LA COMUNICACION PUBLICITARIA", cr2004:6, area2004:"Básica", m2025:"INTRODUCCION A LA COMUNICACION PUBLICITARIA Y POLITICA", cr2025:6, area2025:"Básica"},
+  {m2004:"CAMPAÑAS DE COMUNICACION PUBLICITARIA Y POLITICA", cr2004:6, area2004:"Disciplinaria", m2025:"CAMPAÑAS PUBLICITARIAS Y POLITICAS", cr2025:4, area2025:"Terminal Comunicación Organizacional"},
+  {m2004:"DISEÑO Y CREATIVIDAD GRAFICA EN PUBLICIDAD", cr2004:6, area2004:"Disciplinaria", m2025:"DISEÑO CREATIVO DE MENSAJES PUBLICITARIOS Y POLITICOS", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"ESTRATEGIAS PARA LA PRODUCCION DE PUBLICIDAD Y PROPAGANDA", cr2004:5, area2004:"Disciplinaria", m2025:"ESTRATEGIAS DE COMUNICACION POLITICA", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"FUNDAMENTOS DEL MEDIO RADIOFONICO", cr2004:4, area2004:"Básica", m2025:"FUNDAMENTOS DE LA PRODUCCION SONORA", cr2025:5, area2025:"Básica"},
+  {m2004:"REALIZACION DE PROYECTOS RADIOFONICOS", cr2004:4, area2004:"Disciplinaria", m2025:"PRODUCCION DE PROYECTOS SONOROS", cr2025:4, area2025:"Disciplinaria"},
+  {m2004:"ANALISIS CINEMATOGRAFICO", cr2004:6, area2004:"Terminal Nuevas Tecnologías", m2025:"CINE, ESTETICA Y REALIZACION", cr2025:4, area2025:"Terminal Comunicación Digital"},
+  {m2004:"ANIMACION DIGITAL", cr2004:4, area2004:"Terminal Nuevas Tecnologías", m2025:"ANIMACION MULTIPLATAFORMA", cr2025:5, area2025:"Terminal Comunicación Digital"},
+  {m2004:"PROYECTOS RADIOFONICOS EXPERIMENTALES", cr2004:4, area2004:"Terminal Nuevas Tecnologías", m2025:"PRODUCCION SONORA AVANZADA", cr2025:5, area2025:"Terminal Comunicación Digital"},
+  {m2004:"TALLER DE HIPERMEDIA II", cr2004:5, area2004:"Terminal Nuevas Tecnologías", m2025:"PRODUCCION DE INTERFACES GRAFICAS INTERACTIVAS", cr2025:5, area2025:"Terminal Comunicación Digital"},
+  {m2004:"TALLER DE LA COMUNICACION GRAFICA", cr2004:4, area2004:"Terminal Nuevas Tecnologías", m2025:"COMUNICACION VISUAL EN MEDIOS DIGITALES", cr2025:4, area2025:"Terminal Comunicación Digital"},
+  {m2004:"TALLER DE TELEVISION Y VIDEO II", cr2004:5, area2004:"Terminal Nuevas Tecnologías", m2025:"CREACION DE CONTENIDOS PARA TELEVISION Y MULTIPLATAFORMA", cr2025:5, area2025:"Terminal Comunicación Digital"},
+  {m2004:"COMPORTAMIENTO ORGANIZACIONAL Y MEJORA CONTINUA", cr2004:5, area2004:"Terminal Comunicación Organizacional", m2025:"PROCESOS DE CAMBIO EN LAS ORGANIZACIONES", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
+  {m2004:"ECONOMIA DE LA INFORMACION Y GLOBALIZACION", cr2004:5, area2004:"Terminal Comunicación Organizacional", m2025:"ECONOMIA DE LA INFORMACION Y GLOBALIZACION", cr2025:5, area2025:"Disciplinaria"},
+  {m2004:"ESTRATEGIAS COMUNICACIONALES PARA LA CAPACITACION", cr2004:6, area2004:"Terminal Comunicación Organizacional", m2025:"COMUNICACION PARA LA FORMACION DE CAPITAL HUMANO", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
+  {m2004:"MEDIOS DE COMUNICACION INTERNA EN EL TRABAJO", cr2004:6, area2004:"Terminal Comunicación Organizacional", m2025:"SOCIAL MEDIA CORPORATIVA", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
+  {m2004:"TEORIA Y PRACTICA DE LA ADMINISTRACION DE EMPRESAS DE COMUNICACION", cr2004:6, area2004:"Terminal Comunicación Organizacional", m2025:"EMPRESAS DE COMUNICACION Y MODELO DE NEGOCIOS", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
+  {m2004:"SERVICIO SOCIAL", cr2004:12, area2004:"Terminal", m2025:"SERVICIO SOCIAL", cr2025:12, area2025:"Terminal"},
+  {m2004:"EXPERIENCIA RECEPCIONAL", cr2004:12, area2004:"Terminal", m2025:"EXPERIENCIA RECEPCIONAL", cr2025:12, area2025:"Terminal"},
+  {m2004:"ANALISIS DEL DISCURSO PERIODISTICO", cr2004:4, area2004:"Terminal Periodismo", m2025:"DISCURSO Y PERIODISMO", cr2025:4, area2025:"Terminal Periodismo"},
+  {m2004:"CORRECCION DEL ESTILO EN MEDIOS DE COMUNICACION", cr2004:4, area2004:"Terminal Periodismo", m2025:"CURADURIA DE DATOS PERIODISTICOS", cr2025:4, area2025:"Terminal Periodismo"},
+  {m2004:"DISEÑO EDITORIAL ASISTIDO POR COMPUTADORA", cr2004:4, area2004:"Terminal Periodismo", m2025:"ESPECIALIZACION EN DISEÑO Y PRODUCCION EDITORIAL", cr2025:4, area2025:"Terminal Periodismo"},
+  {m2004:"PERIODISMO DIGITAL", cr2004:6, area2004:"Terminal Periodismo", m2025:"CIBERPERIODISMO", cr2025:5, area2025:"Terminal Periodismo"},
+  {m2004:"PERIODISMO ESPECIALIZADO", cr2004:6, area2004:"Terminal Periodismo", m2025:"ESPECIALIZACION PERIODISTICA", cr2025:6, area2025:"Terminal Periodismo"},
+  {m2004:"TALLER DE REDACCION: GENEROS DE OPINION", cr2004:4, area2004:"Terminal Periodismo", m2025:"PERIODISMO DE OPINION", cr2025:5, area2025:"Terminal Periodismo"},
+  {m2004:"COMPUTACION BASICA", cr2004:6, area2004:"Básica", m2025:"LITERACIDAD DIGITAL", cr2025:4, area2025:"Básica"},
+  {m2004:"HABILIDADES DEL PENSAMIENTO CRITICO Y CREATIVO", cr2004:6, area2004:"Básica", m2025:"PENSAMIENTO CRITICO PARA LA SOLUCION DE PROBLEMAS", cr2025:4, area2025:"Básica"},
+  {m2004:"INGLES I", cr2004:6, area2004:"Básica", m2025:"LENGUA I", cr2025:4, area2025:"Básica"},
+  {m2004:"INGLES II", cr2004:6, area2004:"Básica", m2025:"LENGUA II", cr2025:4, area2025:"Básica"},
+  {m2004:"LECTURA Y REDACCION A TRAVES DEL ANALISIS DEL MUNDO CONTEMPORANEO", cr2004:6, area2004:"Básica", m2025:"LECTURA Y ESCRITURA DE TEXTOS ACADEMICOS", cr2025:4, area2025:"Básica"},
+  // Materias del Plan 2025 sin equivalente en Plan 2004 (solo transferencia a AFEL)
+  {m2004:null, cr2004:0, area2004:null, m2025:"DISEÑO DEL PROTOCOLO DE INVESTIGACION", cr2025:4, area2025:"Disciplinaria", sinEquivalencia:true},
+  {m2004:null, cr2004:0, area2004:null, m2025:"CONSULTORIA EN COMUNICACION", cr2025:4, area2025:"Terminal Comunicación Organizacional", sinEquivalencia:true},
+  {m2004:null, cr2004:0, area2004:null, m2025:"PRACTICAS PROFESIONALES", cr2025:4, area2025:"Terminal", sinEquivalencia:true}
+];
+
+// ============================================================
+// LÓGICA DE LA APLICACIÓN
+// ============================================================
+const direccion = document.getElementById('direccion');
+const infoDireccion = document.getElementById('infoDireccion');
+const btnAbrirModal = document.getElementById('btnAbrirModal');
+const modalOverlay = document.getElementById('modalOverlay');
+const modalTitulo = document.getElementById('modalTitulo');
+const btnCerrarModal = document.getElementById('btnCerrarModal');
+const modalBuscador = document.getElementById('modalBuscador');
+const modalLista = document.getElementById('modalLista');
+const resultado = document.getElementById('resultado');
+const materiaSeleccionadaDiv = document.getElementById('materiaSeleccionada');
+const textoMateriaSeleccionada = document.getElementById('textoMateriaSeleccionada');
+const btnCambiar = document.getElementById('btnCambiar');
+
+let materiaActual = null;
+
+function normalizeText(text) {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+}
+
+function actualizarVista() {
+  const dir = direccion.value;
+  materiaActual = null;
+  materiaSeleccionadaDiv.classList.remove('activo');
+  resultado.innerHTML = '<div class="placeholder">Selecciona tu plan y toca "Seleccionar una experiencia educativa" para ver su equivalencia.</div>';
+
+  if (dir === '2004a2025') {
+    infoDireccion.textContent = 'Toca el botón de abajo para buscar una experiencia del Plan 2004 y conocer su equivalencia en el Plan 2025.';
+    modalTitulo.textContent = 'Materias del Plan 2004';
+  } else {
+    infoDireccion.textContent = 'Toca el botón de abajo para buscar una experiencia del Plan 2025 y conocer su equivalencia en el Plan 2004.';
+    modalTitulo.textContent = 'Materias del Plan 2025';
+  }
+}
+
+direccion.addEventListener('change', actualizarVista);
+
+function abrirModal() {
+  modalOverlay.classList.add('activo');
+  modalBuscador.value = '';
+  modalBuscador.focus();
+  filtrarLista('');
+}
+
+function cerrarModal() {
+  modalOverlay.classList.remove('activo');
+}
+
+btnAbrirModal.addEventListener('click', abrirModal);
+btnCerrarModal.addEventListener('click', cerrarModal);
+btnCambiar.addEventListener('click', abrirModal);
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) cerrarModal();
+});
+
+function filtrarLista(query) {
+  const dir = direccion.value;
+  const q = normalizeText(query);
+  modalLista.innerHTML = '';
+  
+  let opciones = [];
+  if (dir === '2004a2025') {
+    opciones = equivalencias.filter(e => e.m2004).map(e => ({
+      nombre: e.m2004,
+      area: e.area2004,
+      data: e
+    }));
+  } else {
+    opciones = equivalencias.map(e => ({
+      nombre: e.m2025,
+      area: e.area2025,
+      data: e
+    }));
+  }
+
+  const filtradas = q ? opciones.filter(o => normalizeText(o.nombre).includes(q)) : opciones;
+
+  if (filtradas.length === 0) {
+    modalLista.innerHTML = '<li class="modal-empty">No se encontraron experiencias educativas con ese nombre.</li>';
+    return;
+  }
+
+  filtradas.forEach(op => {
+    const li = document.createElement('li');
+    li.className = 'modal-item';
+    li.innerHTML = `<strong>${op.nombre}</strong><small>${op.area || 'Sin área asignada'}</small>`;
+    li.addEventListener('click', () => {
+      seleccionarMateria(op.data);
+    });
+    modalLista.appendChild(li);
+  });
+}
+
+modalBuscador.addEventListener('input', (e) => {
+  filtrarLista(e.target.value);
+});
+
+function seleccionarMateria(data) {
+  materiaActual = data;
+  const dir = direccion.value;
+  const nombreMostrar = dir === '2004a2025' ? data.m2004 : data.m2025;
+  
+  textoMateriaSeleccionada.textContent = nombreMostrar;
+  materiaSeleccionadaDiv.classList.add('activo');
+  cerrarModal();
+
+  const dirLabel = dir === '2004a2025' ? '2004a2025' : '2025a2004';
+  mostrarEquivalenciaUI(data, dirLabel);
+}
+
+function renderCard(titulo, nombre, cred, area, esDestino, emoji) {
+  const clase = esDestino ? 'card destino' : 'card';
+  return `
+    <div class="${clase}">
+      <h3>${emoji} ${titulo}</h3>
+      <p><strong>${nombre}</strong></p>
+      <p>
+        <span class="badge badge-cred">${cred} créditos</span>
+        <span class="badge badge-area">${area}</span>
+      </p>
+    </div>`;
+}
+
+function mostrarEquivalenciaUI(match, dir) {
+  if (dir === '2004a2025') {
+    const origen = { nombre: match.m2004, cr: match.cr2004, area: match.area2004 };
+    const destino = { nombre: match.m2025, cr: match.cr2025, area: match.area2025 };
+    resultado.innerHTML = mostrarEquivalenciaHTML(origen, destino, 'Plan 2004 (origen)', 'Equivalente en Plan 2025', '📖', '✅', '⬇️');
+  } else {
+    if (match.sinEquivalencia) {
+      resultado.innerHTML = `
+        ${renderCard('Plan 2025 (origen)', match.m2025, match.cr2025, match.area2025, false, '📖')}
+        <div class="arrow">⬇️</div>
+        <div class="card transferencia">
+          <h3>🔸 Sin equivalencia directa al Plan 2004</h3>
+          <p>Esta materia <strong>no tiene equivalencia</strong> con ninguna experiencia educativa del Plan 2004.</p>
+          <p style="margin-top:8px;">Se reconoce únicamente como <strong>transferencia de créditos al Área de Formación de Elección Libre (AFEL)</strong>.</p>
+        </div>`;
+      return;
+    }
+    const origen = { nombre: match.m2025, cr: match.cr2025, area: match.area2025 };
+    const destino = { nombre: match.m2004, cr: match.cr2004, area: match.area2004 };
+    resultado.innerHTML = mostrarEquivalenciaHTML(origen, destino, 'Plan 2025 (origen)', 'Equivalente en Plan 2004', '📖', '✅', '⬆️');
+  }
+}
+
+function mostrarEquivalenciaHTML(origen, destino, labelOrigen, labelDestino, emojiOrigen, emojiDestino, flecha) {
+  const cambioCred = origen.cr !== destino.cr;
+  const cambioArea = origen.area !== destino.area;
+
+  let html = renderCard(labelOrigen, origen.nombre, origen.cr, origen.area, false, emojiOrigen);
+  html += `<div class="arrow">${flecha}</div>`;
+  html += renderCard(labelDestino, destino.nombre, destino.cr, destino.area, true, emojiDestino);
+
+  if (cambioCred || cambioArea) {
+    html += `<div class="card transferencia">
+      <h3>⚠️ Observaciones</h3>
+      <p>
+        ${cambioCred ? `• Los créditos cambian de <strong>${origen.cr}</strong> a <strong>${destino.cr}</strong>.<br>` : ''}
+        ${cambioArea ? `• El área cambia de <strong>${origen.area}</strong> a <strong>${destino.area}</strong>.` : ''}
+      </p>
+      <p style="margin-top:8px;font-size:0.9em;">Consulta con Control Escolar para validar la aplicación.</p>
+    </div>`;
+  }
+  return html;
+}
+
+// Inicializar
+actualizarVista();
+</script>
+</body>
+</html>
