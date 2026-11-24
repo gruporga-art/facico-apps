@@ -2,693 +2,1333 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Equivalencias LCC - Plan 2004 ↔ Plan 2025 | Universidad Veracruzana</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equivalencias y Antecedentes LCC · Plan 2004 ↔ Plan 2025 · Universidad Veracruzana</title>
 <style>
-  :root {
-    --azul-uv: #18529D;
-    --azul-uv-dark: #0f3a73;
-    --azul-uv-light: #e8f0fa;
-    --verde-uv: #28AD56;
-    --verde-uv-dark: #1d8240;
-    --verde-uv-light: #e6f7ec;
-    --alerta: #d97706;
-    --alerta-bg: #fff8eb;
-    --error: #c53030;
-    --error-bg: #fff5f5;
-    --gris-texto: #4a5568;
-    --gris-claro: #f5f7fa;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg, var(--azul-uv) 0%, var(--verde-uv) 100%);
-    min-height: 100vh;
-    padding: 16px;
-    color: #333;
-  }
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    overflow: hidden;
-  }
-  header {
-    background: var(--azul-uv);
-    color: #fff;
-    padding: 24px 20px;
-    text-align: center;
-    border-bottom: 4px solid var(--verde-uv);
-  }
-  header h1 { font-size: 1.3em; margin-bottom: 6px; line-height: 1.3; }
-  header p { opacity: 0.95; font-size: 0.9em; }
-  header .uv-badge {
-    display: inline-block;
-    background: var(--verde-uv);
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.75em;
-    margin-bottom: 10px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .controls {
-    padding: 20px;
-    background: var(--gris-claro);
-    border-bottom: 1px solid #e1e4e8;
-  }
-  .controls label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 8px;
-    color: var(--azul-uv);
-    font-size: 0.95em;
-  }
-  .controls select {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #cbd5e0;
-    border-radius: 8px;
-    font-size: 16px;
-    margin-bottom: 16px;
-    background: #fff;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2318529D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 20px;
-  }
-  .direction-info {
-    background: var(--azul-uv-light);
-    border-left: 4px solid var(--azul-uv);
-    padding: 12px 14px;
-    border-radius: 6px;
-    font-size: 0.9em;
-    color: var(--azul-uv-dark);
-    margin-bottom: 16px;
-    line-height: 1.4;
-  }
-  .btn-seleccionar {
-    width: 100%;
-    padding: 14px;
-    background: var(--azul-uv);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.2s;
-  }
-  .btn-seleccionar:active { background: var(--azul-uv-dark); transform: scale(0.98); }
-  .materia-seleccionada {
-    margin-top: 12px;
-    padding: 12px;
-    background: var(--verde-uv-light);
-    border: 1px solid var(--verde-uv);
-    border-radius: 8px;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .materia-seleccionada.activo { display: flex; }
-  .materia-seleccionada span {
-    font-size: 0.9em;
-    color: var(--verde-uv-dark);
-    font-weight: 500;
-    flex: 1;
-    margin-right: 10px;
-  }
-  .btn-cambiar {
-    background: transparent;
-    border: 1px solid var(--verde-uv-dark);
-    color: var(--verde-uv-dark);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.85em;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 1000;
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .modal-overlay.activo { display: flex; }
-  .modal-content {
-    background: #fff;
-    width: 100%;
-    max-width: 600px;
-    max-height: 85vh;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    flex-direction: column;
-    animation: slideUp 0.3s ease-out;
-  }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-  }
-  @media (min-width: 600px) {
-    .modal-overlay { align-items: center; padding: 20px; }
-    .modal-content { border-radius: 16px; max-height: 80vh; }
-  }
-  .modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #e2e8f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .modal-header h3 { font-size: 1.1em; color: var(--azul-uv); }
-  .btn-cerrar {
-    background: none; border: none; font-size: 1.5em; color: #718096; cursor: pointer; padding: 4px 8px;
-  }
-  .modal-search {
-    padding: 12px 20px;
-    border-bottom: 1px solid #e2e8f0;
-    position: sticky;
-    top: 0;
-    background: #fff;
-    z-index: 10;
-  }
-  .modal-search input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #cbd5e0;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-  }
-  .modal-search input:focus { border-color: var(--azul-uv); }
-  .modal-list {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    flex: 1;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-  .modal-item {
-    padding: 16px 20px;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 0.95em;
-    color: #2d3748;
-    cursor: pointer;
-    transition: background 0.15s;
-    line-height: 1.4;
-  }
-  .modal-item:active, .modal-item:hover { background: var(--azul-uv-light); }
-  .modal-item strong { color: var(--azul-uv); display: block; margin-bottom: 2px; }
-  .modal-item small { color: #718096; font-size: 0.85em; }
-  .modal-empty {
-    padding: 30px 20px;
-    text-align: center;
-    color: #718096;
-    font-style: italic;
-  }
-  .result { padding: 24px 20px; min-height: 150px; }
-  .placeholder { text-align: center; color: #718096; padding: 30px 20px; font-style: italic; line-height: 1.5; }
-  .card {
-    background: #f8fafc;
-    border-left: 5px solid var(--azul-uv);
-    padding: 16px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-  .card.destino { border-left-color: var(--verde-uv); }
-  .card h3 { color: var(--azul-uv); margin-bottom: 8px; font-size: 1.05em; }
-  .card.destino h3 { color: var(--verde-uv-dark); }
-  .badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-    margin-right: 6px;
-    margin-top: 4px;
-  }
-  .badge-cred { background: var(--verde-uv-light); color: var(--verde-uv-dark); }
-  .badge-area { background: var(--azul-uv-light); color: var(--azul-uv-dark); }
-  .transferencia { background: var(--alerta-bg); border-left-color: var(--alerta); }
-  .transferencia h3 { color: var(--alerta); }
-  .no-equiv { background: var(--error-bg); border-left-color: var(--error); }
-  .no-equiv h3 { color: var(--error); }
-  .arrow { text-align: center; font-size: 1.5em; color: var(--verde-uv); margin: -4px 0; font-weight: bold; }
-  footer {
-    text-align: center;
-    padding: 20px;
-    background: var(--gris-claro);
-    font-size: 0.8em;
-    color: var(--gris-texto);
-    border-top: 3px solid var(--verde-uv);
-    line-height: 1.5;
-  }
-  footer strong { color: var(--azul-uv); }
+:root{
+  --navy-950:#071630; --navy-900:#0b1f3d; --navy-800:#122c53; --navy-700:#1a3a6b; --navy-500:#2f5da3; --navy-300:#8fb0dd;
+  --uv:#28a745; --uv-d:#1a7a33; --mint:#20c997;
+  --bas:#28a745; --bas-d:#1a7a33; --bas-l:#e6f7ec;
+  --dis:#1c7ed6; --dis-d:#1259a3; --dis-l:#e4f1fd;
+  --ter:#7c3aed; --ter-d:#5b21b6; --ter-l:#f0e8ff;
+  --lib:#f59e0b; --lib-d:#b45309; --lib-l:#fff4e0;
+  --amber:#f59e0b; --amber-d:#b45309;
+  --danger:#e03131; --danger-d:#9b1c1c; --danger-l:#fdeaea;
+  --info:#1098ad; --info-l:#e2f6f9;
+  --ink:#0b1a2e; --ink2:#3a4f6d; --ink3:#6d829e;
+  --paper:#e9eef6; --surf:#ffffff; --surf2:#f5f8fc; --warm:#faf7f1;
+  --line:#dce4ef; --line2:#c6d3e4;
+  --scrim:rgba(7,22,48,.76);
+  --s1:0 3px 12px rgba(11,31,61,.08);
+  --s2:0 14px 36px rgba(11,31,61,.15);
+  --s3:0 30px 74px rgba(5,14,32,.44);
+  --r:13px; --rl:20px;
+  --top:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--top) + 128px)}
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:var(--ink);
+  background:var(--paper);min-height:100vh;position:relative;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:-25%;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(54rem 30rem at 6% -8%, rgba(40,167,69,.20), transparent 62%),
+    radial-gradient(50rem 28rem at 98% 0%, rgba(124,58,237,.20), transparent 64%),
+    radial-gradient(46rem 30rem at 46% 106%, rgba(28,126,214,.18), transparent 66%),
+    linear-gradient(166deg,#eef3f9 0%,#e5ecf5 44%,#f8f4ec 100%);
+  animation:drift 30s ease-in-out infinite alternate;
+}
+@keyframes drift{from{transform:translate3d(-1.6%,-1.2%,0) scale(1.02)}to{transform:translate3d(1.8%,1.4%,0) scale(1.07)}}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.3;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+}
+*{scrollbar-width:thin;scrollbar-color:var(--navy-500) #d3ddec}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#d3ddec;border-radius:20px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--navy-500),var(--navy-700));border-radius:20px;border:3px solid #d3ddec}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--mint),var(--uv))}
+::-webkit-scrollbar-corner{background:#d3ddec}
+
+/* ═══════ TOPBAR ═══════ */
+.top{
+  position:fixed;top:0;left:0;right:0;height:var(--top);z-index:600;
+  display:flex;align-items:center;gap:14px;padding:0 18px;
+  background:linear-gradient(100deg,var(--navy-950),var(--navy-700) 62%,#25538e);
+  border-bottom:3px solid var(--uv);box-shadow:0 6px 24px rgba(7,22,48,.28);
+}
+.top::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(26rem 8rem at 88% 0%,rgba(32,201,151,.3),transparent 70%)}
+.brand{display:flex;align-items:center;gap:11px;position:relative;z-index:2;min-width:0}
+.crest{
+  width:36px;height:36px;flex:none;border-radius:11px;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--uv),var(--mint));color:#04240f;font-weight:900;font-size:.72rem;
+  letter-spacing:.02em;box-shadow:0 5px 16px rgba(40,167,69,.45);border:1.5px solid rgba(255,255,255,.35)
+}
+.brand .txt{min-width:0}
+.brand .t1{color:#fff;font-weight:800;font-size:.95rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand .t2{color:var(--navy-300);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.tnav{display:flex;gap:4px;margin-left:auto;position:relative;z-index:2}
+.tnav a{
+  color:#dbe7f7;text-decoration:none;font-size:.82rem;font-weight:700;padding:8px 13px;border-radius:9px;
+  transition:.18s;white-space:nowrap;border:1.5px solid transparent
+}
+.tnav a:hover{background:rgba(255,255,255,.13);color:#fff}
+.tnav a.on{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.34);color:#fff}
+.tprint{
+  position:relative;z-index:2;border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:.82rem;
+  color:#04240f;background:linear-gradient(130deg,var(--mint),var(--uv));padding:9px 16px;border-radius:10px;
+  box-shadow:0 5px 16px rgba(32,201,151,.4);transition:.18s;white-space:nowrap;touch-action:manipulation
+}
+.tprint:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(32,201,151,.52)}
+.tprint:active{transform:scale(.96)}
+.burger{display:none;position:relative;z-index:2;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.32);
+  color:#fff;border-radius:9px;width:38px;height:34px;cursor:pointer;font-size:1rem}
+
+/* ═══════ HERO ═══════ */
+.wrap{max-width:1420px;margin:0 auto;padding:calc(var(--top) + 22px) 18px 60px}
+.hero{
+  position:relative;overflow:hidden;border-radius:var(--rl);padding:30px 28px;margin-bottom:18px;color:#fff;
+  background:linear-gradient(134deg,var(--navy-950) 0%,var(--navy-800) 40%,#20477d 72%,#1d6b4a 100%);
+  box-shadow:var(--s2)
+}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(30rem 14rem at 92% -20%,rgba(32,201,151,.36),transparent 68%),
+             radial-gradient(26rem 14rem at 4% 120%,rgba(124,58,237,.42),transparent 70%)}
+.hero>*{position:relative;z-index:2}
+.uvtag{display:inline-block;background:linear-gradient(120deg,var(--uv),var(--mint));color:#04240f;
+  padding:5px 16px;border-radius:30px;font-size:.68rem;font-weight:900;letter-spacing:.14em;margin-bottom:13px;
+  box-shadow:0 6px 18px rgba(40,167,69,.4)}
+.hero h1{font-size:clamp(1.42rem,3.6vw,2.24rem);letter-spacing:-.024em;line-height:1.14;margin-bottom:9px;text-shadow:0 3px 16px rgba(0,0,0,.3)}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,#7ff0c0,#a8c8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:.95rem;line-height:1.65;color:#d9e6f7;max-width:78ch}
+.hstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:11px;margin-top:20px}
+.hs{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:12px 13px;backdrop-filter:blur(6px)}
+.hs b{display:block;font-size:1.6rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.hs span{display:block;font-size:.7rem;color:#c6d8ee;margin-top:5px;font-weight:700;letter-spacing:.03em}
+.hs.g b{color:#8ef0b8}.hs.b b{color:#a9cdff}.hs.p b{color:#d3b6ff}.hs.a b{color:#ffd694}
+
+/* ═══════ CONTROL DECK ═══════ */
+.deck{
+  position:sticky;top:var(--top);z-index:500;border-radius:var(--r);margin-bottom:18px;
+  background:linear-gradient(150deg,#ffffff,#f2f7fc);border:1.5px solid var(--line2);
+  box-shadow:0 10px 28px rgba(11,31,61,.13);overflow:hidden
+}
+.deck-h{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(100deg,#eaf2fb,#f4f8fd);
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.deck-h .lbl{font-size:.72rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-700)}
+.deck-h .live{margin-left:auto;font-size:.76rem;font-weight:800;color:var(--uv-d);background:var(--bas-l);
+  border:1px solid #b9e6c8;padding:3px 11px;border-radius:20px}
+.deck-b{padding:12px 14px;display:flex;flex-direction:column;gap:11px}
+.seg{display:flex;gap:6px;background:#e7eef8;padding:5px;border-radius:12px;border:1px solid var(--line2);flex-wrap:wrap}
+.seg button{
+  flex:1;min-width:150px;border:none;background:transparent;cursor:pointer;font-family:inherit;font-weight:800;font-size:.82rem;
+  color:var(--ink2);padding:10px 12px;border-radius:9px;transition:.2s;display:flex;align-items:center;justify-content:center;gap:7px;
+  touch-action:manipulation;line-height:1.25
+}
+.seg button:hover{background:#fff;color:var(--navy-700)}
+.seg button.on{background:linear-gradient(130deg,var(--navy-700),var(--navy-500));color:#fff;box-shadow:0 5px 15px rgba(26,58,107,.32)}
+.seg button.on.rev{background:linear-gradient(130deg,var(--ter-d),var(--ter))}
+.seg button.on.both{background:linear-gradient(130deg,var(--uv-d),var(--uv))}
+.ctrls{display:grid;grid-template-columns:2fr repeat(4,minmax(120px,1fr));gap:9px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld label{font-size:.66rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.fld input,.fld select{
+  width:100%;padding:10px 11px;border:2px solid var(--line2);border-radius:10px;background:#fff;
+  font-family:inherit;font-size:.85rem;color:var(--ink);font-weight:600;transition:.18s;min-width:0
+}
+.fld input:focus,.fld select:focus{outline:none;border-color:var(--navy-500);box-shadow:0 0 0 4px rgba(47,93,163,.14)}
+.fld select{cursor:pointer}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tog{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--line2);border-radius:10px;
+  padding:8px 12px;font-size:.78rem;font-weight:800;color:var(--ink2);cursor:pointer;user-select:none;transition:.18s;touch-action:manipulation}
+.tog:hover{border-color:var(--navy-300)}
+.tog input{position:absolute;opacity:0;pointer-events:none}
+.tog i{width:30px;height:17px;border-radius:20px;background:#ccd8e7;position:relative;transition:.22s;flex:none}
+.tog i::after{content:"";position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:.22s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tog:has(input:checked){border-color:var(--uv);color:var(--uv-d);background:var(--bas-l)}
+.tog:has(input:checked) i{background:linear-gradient(90deg,var(--uv),var(--mint))}
+.tog:has(input:checked) i::after{transform:translateX(13px)}
+.tog.amber:has(input:checked){border-color:var(--amber);color:var(--amber-d);background:var(--lib-l)}
+.tog.amber:has(input:checked) i{background:linear-gradient(90deg,var(--amber),#ffc861)}
+.mini{border:2px solid var(--navy-700);background:#fff;color:var(--navy-700);border-radius:10px;padding:8px 14px;
+  font-family:inherit;font-size:.78rem;font-weight:800;cursor:pointer;transition:.18s;touch-action:manipulation;white-space:nowrap}
+.mini:hover{background:var(--navy-700);color:#fff}
+.mini:active{transform:scale(.96)}
+.mini.g{border-color:var(--uv-d);color:var(--uv-d)}
+.mini.g:hover{background:var(--uv-d);color:#fff}
+.mini.p{border-color:var(--ter-d);color:var(--ter-d)}
+.mini.p:hover{background:var(--ter-d);color:#fff}
+.mini.gray{border-color:var(--line2);color:var(--ink2)}
+.mini.gray:hover{background:var(--ink2);color:#fff;border-color:var(--ink2)}
+
+/* ═══════ RESULTS ═══════ */
+.resbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.resbar .cnt{font-size:1.06rem;font-weight:900;color:var(--navy-700)}
+.resbar .sub{font-size:.8rem;color:var(--ink3);font-weight:600}
+.legend{display:flex;gap:9px;flex-wrap:wrap;margin-left:auto}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:800;color:var(--ink2);
+  background:#fff;border:1px solid var(--line);padding:4px 10px;border-radius:20px}
+.lg em{width:10px;height:10px;border-radius:3px;display:block}
+
+.agroup{margin-bottom:22px;animation:rise .4s cubic-bezier(.2,.75,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ahead{display:flex;align-items:center;gap:11px;padding:11px 15px;border-radius:12px 12px 0 0;color:#fff;flex-wrap:wrap}
+.ahead .ic{font-size:1.24rem}
+.ahead h3{font-size:1rem;font-weight:900;letter-spacing:.01em}
+.ahead .meta{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.ahead .pill{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.34);padding:3px 11px;border-radius:20px;font-size:.71rem;font-weight:800}
+.a-BAS .ahead{background:linear-gradient(100deg,var(--bas-d),var(--bas))}
+.a-DIS .ahead{background:linear-gradient(100deg,var(--dis-d),var(--dis))}
+.a-TER .ahead{background:linear-gradient(100deg,var(--ter-d),var(--ter))}
+.a-LIB .ahead{background:linear-gradient(100deg,var(--lib-d),var(--lib))}
+.abody{background:#fff;border:1.5px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:13px;box-shadow:var(--s1)}
+.accent{margin:4px 0 12px}
+.accent-h{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:900;color:var(--ter-d);
+  background:var(--ter-l);border-left:4px solid var(--ter);padding:7px 12px;border-radius:8px;margin-bottom:9px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:11px}
+.grid.dense{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+
+.ec{
+  position:relative;border:1.5px solid var(--line);border-radius:12px;padding:13px;background:linear-gradient(180deg,#fff,#fafcfe);
+  cursor:pointer;transition:.2s;overflow:hidden;touch-action:manipulation;display:flex;flex-direction:column;gap:8px
+}
+.ec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.ec.k-BAS::before{background:linear-gradient(180deg,var(--bas),var(--mint))}
+.ec.k-DIS::before{background:linear-gradient(180deg,var(--dis),#5fb0f0)}
+.ec.k-TER::before{background:linear-gradient(180deg,var(--ter),#a97bff)}
+.ec.k-LIB::before{background:linear-gradient(180deg,var(--lib),#ffc861)}
+.ec:hover{transform:translateY(-4px);box-shadow:var(--s2);border-color:var(--navy-300)}
+.ec:active{transform:scale(.988)}
+.ec .hd{display:flex;align-items:flex-start;gap:8px}
+.ec h4{font-size:.86rem;font-weight:800;line-height:1.3;color:var(--navy-800);letter-spacing:.005em;flex:1}
+.ec .cr{flex:none;background:linear-gradient(130deg,var(--navy-700),var(--navy-500));color:#fff;font-size:.7rem;font-weight:900;
+  padding:3px 9px;border-radius:8px;white-space:nowrap;box-shadow:0 3px 9px rgba(26,58,107,.26)}
+.ec .tags{display:flex;gap:5px;flex-wrap:wrap}
+.tg{font-size:.63rem;font-weight:900;padding:2px 8px;border-radius:6px;letter-spacing:.02em;white-space:nowrap}
+.tg.plan{background:#e7eef8;color:var(--navy-700);border:1px solid #cddcee}
+.tg.ant{background:var(--lib-l);color:var(--amber-d);border:1px solid #ffdda1}
+.tg.dir{background:var(--bas-l);color:var(--bas-d);border:1px solid #b9e6c8}
+.tg.par{background:var(--lib-l);color:var(--amber-d);border:1px solid #ffdda1}
+.tg.new{background:var(--info-l);color:#0b6b7a;border:1px solid #a9dfe8}
+.tg.non{background:var(--danger-l);color:var(--danger-d);border:1px solid #f5c2c2}
+.tg.ac{background:var(--ter-l);color:var(--ter-d);border:1px solid #d9c6ff}
+.ec .eq{border-top:1px dashed var(--line2);padding-top:8px;font-size:.76rem;line-height:1.45;color:var(--ink2)}
+.ec .eq .k{font-size:.62rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:3px}
+.ec .eq .v{font-weight:800;color:var(--navy-700)}
+.ec .eq .arrow{color:var(--uv);font-weight:900;margin-right:4px}
+.ec .antline{font-size:.72rem;color:var(--amber-d);background:var(--lib-l);border:1px solid #ffe4b5;border-radius:8px;padding:6px 9px;line-height:1.4}
+.ec .more{position:absolute;right:11px;bottom:10px;font-size:.66rem;font-weight:900;color:var(--navy-500);opacity:0;transition:.2s}
+.ec:hover .more{opacity:1}
+.grid.dense .ec{padding:10px;gap:6px}
+.grid.dense .ec h4{font-size:.78rem}
+.grid.dense .ec .eq{font-size:.7rem}
+.grid.dense .ec .antline{display:none}
+
+.tblwrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line)}
+table.rt{width:100%;border-collapse:collapse;min-width:760px;font-size:.8rem}
+table.rt th{background:linear-gradient(180deg,var(--navy-700),var(--navy-800));color:#fff;padding:10px 9px;text-align:left;font-weight:800;font-size:.74rem;
+  letter-spacing:.03em;text-transform:uppercase;position:sticky;top:0}
+table.rt td{padding:9px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+table.rt tr:nth-child(even) td{background:#f8fbfe}
+table.rt tr:hover td{background:#eef5fd;cursor:pointer}
+table.rt td.n{font-weight:800;color:var(--navy-800)}
+table.rt td.c{text-align:center;font-weight:900;color:var(--navy-700)}
+.empty{text-align:center;padding:52px 20px;color:var(--ink3)}
+.empty .big{font-size:3rem;margin-bottom:12px;opacity:.5}
+.empty h3{font-size:1.06rem;color:var(--ink2);margin-bottom:7px}
+
+/* ═══════ COMPARE ═══════ */
+.cmp{background:#fff;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--s1)}
+.cmp-h{display:grid;grid-template-columns:1fr 44px 1fr;background:linear-gradient(100deg,var(--navy-800),var(--navy-700));color:#fff}
+.cmp-h div{padding:11px 14px;font-weight:900;font-size:.82rem}
+.cmp-h .mid{text-align:center;background:rgba(255,255,255,.1)}
+.cmp-r{display:grid;grid-template-columns:1fr 44px 1fr;border-bottom:1px solid var(--line);transition:.16s;cursor:pointer}
+.cmp-r:hover{background:#f2f8ff}
+.cmp-r>div{padding:11px 14px;font-size:.79rem;line-height:1.4}
+.cmp-r .mid{display:grid;place-items:center;background:#f6f9fd;border-left:1px solid var(--line);border-right:1px solid var(--line);font-size:1rem}
+.cmp-r .nm{font-weight:800;color:var(--navy-800)}
+.cmp-r .mt{font-size:.67rem;color:var(--ink3);margin-top:3px;font-weight:700}
+.cmp-r .none{color:var(--danger-d);font-weight:800;font-style:italic}
+
+/* ═══════ SECTIONS ═══════ */
+.sec{margin-top:34px;scroll-margin-top:calc(var(--top) + 130px)}
+.sec-h{display:flex;align-items:center;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+.sec-h .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:.9rem;color:#fff;
+  background:linear-gradient(135deg,var(--navy-700),var(--navy-500));box-shadow:0 5px 15px rgba(26,58,107,.3)}
+.sec-h h2{font-size:clamp(1.14rem,2.6vw,1.5rem);font-weight:900;color:var(--navy-800);letter-spacing:-.015em}
+.sec-h p{width:100%;font-size:.88rem;color:var(--ink2);line-height:1.6;max-width:82ch}
+
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.pc{position:relative;overflow:hidden;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:18px;
+  box-shadow:var(--s1);transition:.24s;display:flex;flex-direction:column;gap:11px}
+.pc:hover{transform:translateY(-5px);box-shadow:var(--s2)}
+.pc::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;opacity:.13}
+.pc.m-E::after{background:radial-gradient(circle,var(--dis),transparent 70%)}
+.pc.m-A::after{background:radial-gradient(circle,var(--ter),transparent 70%)}
+.pc .ph{display:flex;align-items:center;gap:10px;position:relative;z-index:2}
+.pc .pi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;flex:none;color:#fff}
+.pc.p04 .pi{background:linear-gradient(135deg,var(--navy-700),var(--navy-500))}
+.pc.p25 .pi{background:linear-gradient(135deg,var(--uv-d),var(--mint))}
+.pc h3{font-size:1rem;font-weight:900;color:var(--navy-800);line-height:1.2}
+.pc .sm{font-size:.72rem;color:var(--ink3);font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.pc ul{list-style:none;display:flex;flex-direction:column;gap:5px;position:relative;z-index:2}
+.pc li{font-size:.78rem;color:var(--ink2);display:flex;gap:7px;line-height:1.45}
+.pc li b{color:var(--navy-700)}
+.pc .acts{display:flex;gap:8px;margin-top:auto;position:relative;z-index:2;flex-wrap:wrap}
+.pc .acts button{flex:1;min-width:110px;border:none;border-radius:10px;padding:10px;font-family:inherit;font-size:.79rem;font-weight:800;
+  cursor:pointer;transition:.18s;touch-action:manipulation}
+.pc .pv{background:#eef3fa;color:var(--navy-700);border:1.5px solid var(--line2)!important}
+.pc .pv:hover{background:var(--navy-700);color:#fff}
+.pc .pp{background:linear-gradient(130deg,var(--uv),var(--mint));color:#04240f;box-shadow:0 5px 15px rgba(40,167,69,.3)}
+.pc .pp:hover{transform:translateY(-2px);box-shadow:0 9px 21px rgba(40,167,69,.42)}
+
+.chains{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:13px}
+.chain{background:#fff;border:1.5px solid var(--line);border-left:5px solid var(--amber);border-radius:12px;padding:14px;box-shadow:var(--s1)}
+.chain .ch{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.chain .ch b{font-size:.8rem;font-weight:900;color:var(--amber-d)}
+.chain .ch .pl{margin-left:auto;font-size:.64rem;font-weight:900;background:#e7eef8;color:var(--navy-700);padding:2px 8px;border-radius:6px}
+.step{display:flex;align-items:center;gap:9px;padding:7px 0}
+.step .dot{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:.62rem;font-weight:900;color:#fff;
+  background:linear-gradient(135deg,var(--navy-500),var(--navy-700))}
+.step.last .dot{background:linear-gradient(135deg,var(--uv),var(--mint));color:#04240f}
+.step .nm{font-size:.78rem;font-weight:800;color:var(--navy-800);line-height:1.3}
+.step .cr{margin-left:auto;font-size:.66rem;font-weight:900;color:var(--ink3);white-space:nowrap}
+.arrows{padding-left:10px;color:var(--amber);font-size:.8rem;line-height:1}
+
+.note{background:linear-gradient(140deg,#fffaf0,#fff5e4);border:1.5px solid #ffdda1;border-left:5px solid var(--amber);
+  border-radius:12px;padding:15px 17px;font-size:.86rem;line-height:1.65;color:#7a5806}
+.note b{color:var(--amber-d)}
+.note.blue{background:linear-gradient(140deg,#f2f8ff,#e9f3fd);border-color:#bcd9f5;border-left-color:var(--dis);color:#144a7d}
+.note.blue b{color:var(--dis-d)}
+
+/* ═══════ DRAWER ═══════ */
+.scrim{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(5px);z-index:800;opacity:0;pointer-events:none;transition:.26s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:#fff;z-index:850;
+  transform:translateX(102%);transition:transform .34s cubic-bezier(.2,.8,.3,1);display:flex;flex-direction:column;box-shadow:var(--s3)
+}
+.drawer.on{transform:none}
+.dh{padding:18px;color:#fff;position:relative;overflow:hidden;flex:none}
+.dh.k-BAS{background:linear-gradient(130deg,var(--bas-d),var(--bas))}
+.dh.k-DIS{background:linear-gradient(130deg,var(--dis-d),var(--dis))}
+.dh.k-TER{background:linear-gradient(130deg,var(--ter-d),var(--ter))}
+.dh.k-LIB{background:linear-gradient(130deg,var(--lib-d),var(--lib))}
+.dh::after{content:"";position:absolute;inset:0;background:radial-gradient(18rem 8rem at 90% -30%,rgba(255,255,255,.3),transparent 70%)}
+.dh>*{position:relative;z-index:2}
+.dh .x{position:absolute;top:12px;right:12px;z-index:3;width:32px;height:32px;border-radius:9px;border:1.5px solid rgba(255,255,255,.4);
+  background:rgba(255,255,255,.16);color:#fff;cursor:pointer;font-size:1rem;line-height:1}
+.dh .x:hover{background:rgba(255,255,255,.32)}
+.dh .kk{font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.9;margin-bottom:7px}
+.dh h3{font-size:1.14rem;font-weight:900;line-height:1.26;padding-right:38px;letter-spacing:.005em}
+.dh .mm{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.dh .mm span{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.36);padding:3px 11px;border-radius:20px;font-size:.71rem;font-weight:800}
+.db{padding:18px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:15px}
+.blk{border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.blk .bh{padding:9px 13px;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.blk.ant .bh{background:var(--lib-l);color:var(--amber-d);border-bottom:1px solid #ffdda1}
+.blk.eq .bh{background:var(--bas-l);color:var(--bas-d);border-bottom:1px solid #b9e6c8}
+.blk.eq.par .bh{background:var(--lib-l);color:var(--amber-d);border-bottom:1px solid #ffdda1}
+.blk.eq.non .bh{background:var(--danger-l);color:var(--danger-d);border-bottom:1px solid #f5c2c2}
+.blk.eq.new .bh{background:var(--info-l);color:#0b6b7a;border-bottom:1px solid #a9dfe8}
+.blk .bb{padding:12px 13px;display:flex;flex-direction:column;gap:9px}
+.ritem{display:flex;gap:10px;align-items:flex-start;background:#f8fbfe;border:1px solid var(--line);border-radius:9px;padding:9px 11px;cursor:pointer;transition:.16s}
+.ritem:hover{background:#eef5fd;border-color:var(--navy-300);transform:translateX(3px)}
+.ritem .ri{font-size:.95rem;flex:none}
+.ritem .rt{flex:1;min-width:0}
+.ritem .rn{font-size:.8rem;font-weight:800;color:var(--navy-800);line-height:1.3}
+.ritem .rm{font-size:.68rem;color:var(--ink3);margin-top:3px;font-weight:700}
+.ritem .rc{font-size:.68rem;font-weight:900;color:var(--navy-700);background:#e7eef8;padding:2px 8px;border-radius:6px;white-space:nowrap;flex:none}
+.blk .txt{font-size:.81rem;line-height:1.6;color:var(--ink2)}
+.df{padding:14px 18px;border-top:1px solid var(--line);background:var(--surf2);display:flex;gap:9px;flex:none;flex-wrap:wrap}
+.df button{flex:1;min-width:120px;border:none;border-radius:10px;padding:11px;font-family:inherit;font-size:.8rem;font-weight:800;cursor:pointer;transition:.18s}
+.df .cp{background:#e7eef8;color:var(--navy-700);border:1.5px solid var(--line2)!important}
+.df .cp:hover{background:var(--navy-700);color:#fff}
+.df .go{background:linear-gradient(130deg,var(--uv),var(--mint));color:#04240f}
+.df .go:hover{transform:translateY(-2px)}
+
+/* ═══════ MODAL PREVIEW ═══════ */
+.modal{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;padding:16px;background:var(--scrim);backdrop-filter:blur(5px)}
+.modal.on{display:flex;animation:fade .24s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.mbox{background:#fff;border-radius:var(--rl);width:100%;max-width:1080px;max-height:90vh;display:flex;flex-direction:column;box-shadow:var(--s3);animation:pop .32s cubic-bezier(.2,.85,.3,1);overflow:hidden}
+@keyframes pop{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+.mh{padding:15px 18px;background:linear-gradient(100deg,var(--navy-800),var(--navy-700));color:#fff;display:flex;align-items:center;gap:11px;flex-wrap:wrap;flex:none}
+.mh h3{font-size:1rem;font-weight:900;flex:1;min-width:160px}
+.mh button{border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;border-radius:9px;padding:8px 14px;
+  font-family:inherit;font-size:.78rem;font-weight:800;cursor:pointer;transition:.18s}
+.mh button:hover{background:rgba(255,255,255,.3)}
+.mh button.pri{background:linear-gradient(130deg,var(--mint),var(--uv));color:#04240f;border-color:transparent}
+.mb{overflow:auto;padding:18px;background:#eef2f7;flex:1}
+.paper{background:#fff;box-shadow:var(--s2);padding:26px;max-width:960px;margin:0 auto;border-radius:6px}
+
+/* ═══════ RETÍCULA (pantalla + impresión) ═══════ */
+.ret{font-size:.78rem;color:#111}
+.ret-h{text-align:center;border-bottom:3px solid var(--uv);padding-bottom:11px;margin-bottom:14px}
+.ret-h .u{font-size:.66rem;font-weight:900;letter-spacing:.18em;color:var(--uv-d)}
+.ret-h h2{font-size:1.16rem;font-weight:900;color:var(--navy-800);margin:5px 0 3px;letter-spacing:-.01em}
+.ret-h .s{font-size:.8rem;font-weight:800;color:var(--navy-700)}
+.ret-h .m{font-size:.7rem;color:#555;margin-top:5px}
+.ret-meta{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.ret-meta span{font-size:.68rem;font-weight:800;background:#eef3fa;border:1px solid var(--line2);color:var(--navy-700);padding:3px 11px;border-radius:20px}
+.ret-sec{margin-bottom:16px;break-inside:auto}
+.ret-sh{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:7px;color:#fff;margin-bottom:8px}
+.ret-sh.b{background:var(--bas-d)}.ret-sh.d{background:var(--dis-d)}.ret-sh.t{background:var(--ter-d)}.ret-sh.l{background:var(--lib-d)}
+.ret-sh h3{font-size:.84rem;font-weight:900;flex:1}
+.ret-sh .t{font-size:.66rem;font-weight:800;background:rgba(255,255,255,.22);padding:2px 9px;border-radius:20px}
+.ret-ah{font-size:.72rem;font-weight:900;color:var(--ter-d);background:var(--ter-l);border-left:3px solid var(--ter);padding:5px 9px;margin:8px 0 6px;border-radius:5px}
+table.ret-t{width:100%;border-collapse:collapse;font-size:.7rem}
+table.ret-t th{background:var(--navy-700);color:#fff;padding:6px 6px;text-align:left;font-size:.62rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--navy-800)}
+table.ret-t td{border:1px solid #b9c6d8;padding:5px 6px;vertical-align:top;line-height:1.35}
+table.ret-t tr:nth-child(even) td{background:#f6f9fd}
+table.ret-t td.n{font-weight:800;color:var(--navy-900)}
+table.ret-t td.c{text-align:center;font-weight:900;width:34px}
+table.ret-t td.a{color:var(--amber-d);font-size:.65rem;font-weight:700}
+table.ret-t td.e{color:var(--bas-d);font-size:.65rem;font-weight:700}
+table.ret-t td.e.par{color:var(--amber-d)}
+table.ret-t td.e.non{color:var(--danger-d);font-style:italic}
+table.ret-t td.w{background:repeating-linear-gradient(180deg,#fff,#fff 15px,#e8eef6 15px,#e8eef6 16px);width:96px}
+table.ret-t tr.tot td{background:#e7eef8!important;font-weight:900;color:var(--navy-800);font-size:.68rem}
+.ret-cal{border:1.5px solid var(--ter);border-radius:8px;padding:10px 12px;margin-bottom:14px;background:var(--ter-l)}
+.ret-cal h4{font-size:.74rem;font-weight:900;color:var(--ter-d);margin-bottom:7px}
+.ret-cal table{width:100%;border-collapse:collapse;font-size:.66rem}
+.ret-cal th{background:var(--ter-d);color:#fff;padding:4px 6px;font-size:.6rem;border:1px solid var(--ter-d)}
+.ret-cal td{border:1px solid #c9b3f0;padding:4px 6px;text-align:center;font-weight:700;background:#fff}
+.ret-f{margin-top:14px;border-top:2px solid var(--uv);padding-top:9px;font-size:.64rem;color:#555;line-height:1.55}
+.ret-f b{color:var(--navy-800)}
+.ret-lg{display:flex;gap:12px;flex-wrap:wrap;margin-top:7px;font-size:.62rem}
+.ret-lg span{display:inline-flex;align-items:center;gap:5px;font-weight:700}
+.ret-lg em{width:9px;height:9px;border-radius:2px;display:block}
+
+/* ═══════ TOASTS ═══════ */
+.toasts{position:fixed;right:16px;bottom:16px;z-index:1000;display:flex;flex-direction:column;gap:9px;max-width:min(92vw,360px)}
+.toast{background:var(--navy-950);color:#fff;border-radius:12px;padding:12px 15px;font-size:.83rem;line-height:1.5;
+  box-shadow:var(--s3);border-left:4px solid var(--mint);animation:sl .3s cubic-bezier(.2,.85,.3,1)}
+.toast.w{border-left-color:var(--amber)}
+@keyframes sl{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+
+/* ═══════ FOOTER ═══════ */
+.foot{margin-top:40px;background:linear-gradient(160deg,var(--navy-950),var(--navy-800));color:#c9d9ee;border-radius:var(--rl);
+  padding:26px;text-align:center;font-size:.83rem;line-height:1.75;border-top:4px solid var(--uv);position:relative;overflow:hidden}
+.foot::after{content:"";position:absolute;inset:0;background:radial-gradient(24rem 10rem at 80% 0%,rgba(32,201,151,.2),transparent 70%)}
+.foot>*{position:relative;z-index:2}
+.foot b{color:#fff}
+.foot a{color:#8ef0b8;font-weight:800;text-decoration:none}
+.foot a:hover{text-decoration:underline}
+.foot .warn{margin-top:12px;font-size:.76rem;color:#ffd694;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.34);
+  border-radius:10px;padding:10px 14px;display:inline-block}
+
+#printRoot{display:none}
+
+@media print{
+  @page{size:letter portrait;margin:12mm}
+  body{background:#fff!important}
+  body::before,body::after{display:none!important}
+  .top,.wrap,.scrim,.drawer,.modal,.toasts{display:none!important}
+  #printRoot{display:block!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .ret{font-size:9pt}
+  .ret-h h2{font-size:14pt}
+  .ret-sec{break-inside:auto;page-break-inside:auto}
+  .ret-sec.newpage{break-before:page;page-break-before:always}
+  table.ret-t{font-size:7.6pt}
+  table.ret-t th{font-size:6.6pt;padding:4px 5px}
+  table.ret-t td{padding:4px 5px}
+  table.ret-t tr{break-inside:avoid;page-break-inside:avoid}
+  .ret-sh{break-after:avoid;page-break-after:avoid}
+  .ret-ah{break-after:avoid;page-break-after:avoid}
+  .ret-f{font-size:7pt}
+}
+
+@media(max-width:1080px){
+  .ctrls{grid-template-columns:1fr 1fr 1fr}
+  .fld.wide{grid-column:1/-1}
+}
+@media(max-width:860px){
+  :root{--top:56px}
+  .wrap{padding:calc(var(--top) + 14px) 12px 46px}
+  .tnav{position:fixed;top:var(--top);left:0;right:0;flex-direction:column;gap:0;background:var(--navy-900);
+    padding:8px;box-shadow:var(--s2);display:none;border-bottom:3px solid var(--uv)}
+  .tnav.on{display:flex}
+  .tnav a{padding:12px 14px;border-radius:8px}
+  .burger{display:block;margin-left:auto}
+  .tprint{padding:8px 12px;font-size:.76rem}
+  .brand .t1{font-size:.84rem}
+  .brand .t2{display:none}
+  .hero{padding:22px 18px}
+  .ctrls{grid-template-columns:1fr 1fr}
+  .fld.wide{grid-column:1/-1}
+  .seg button{min-width:100%;font-size:.79rem}
+  .grid{grid-template-columns:1fr}
+  .cmp-h,.cmp-r{grid-template-columns:1fr 30px 1fr}
+  .cmp-h div,.cmp-r>div{padding:9px 10px;font-size:.72rem}
+  .drawer{width:100%}
+  .legend{margin-left:0;width:100%}
+  .paper{padding:16px}
+  .mb{padding:10px}
+  .toasts{right:10px;left:10px;bottom:10px;max-width:none}
+  .deck-b{padding:10px}
+  .pc .acts button{min-width:100%}
+}
+@media(max-width:520px){
+  .ctrls{grid-template-columns:1fr}
+  .hstats{grid-template-columns:1fr 1fr}
+  .sec-h h2{font-size:1.06rem}
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="uv-badge">UNIVERSIDAD VERACRUZANA</div>
-    <h1>📚 Licenciatura en Ciencias de la Comunicación - Equivalencias</h1>
-    <p>Consulta las equivalencias entre el Plan 2004 y el Plan 2025</p>
-  </header>
 
-  <div class="controls">
-    <label for="direccion">🔁 Opciones de plan para consulta:</label>
-    <select id="direccion">
-      <option value="2004a2025">Soy del Plan 2004 → quiero ver mi equivalencia en el Plan 2025</option>
-      <option value="2025a2004">Soy del Plan 2025 → quiero ver mi equivalencia en el Plan 2004</option>
-    </select>
-
-    <div class="direction-info" id="infoDireccion">
-      Selecciona un Plan para consultar la equivalencia.
-    </div>
-
-    <button class="btn-seleccionar" id="btnAbrirModal">
-      🔍 Seleccionar una experiencia educativa...
-    </button>
-
-    <div class="materia-seleccionada" id="materiaSeleccionada">
-      <span id="textoMateriaSeleccionada"></span>
-      <button class="btn-cambiar" id="btnCambiar">Cambiar</button>
+<header class="top">
+  <div class="brand">
+    <div class="crest">FCC</div>
+    <div class="txt">
+      <div class="t1">Equivalencias y Antecedentes LCC</div>
+      <div class="t2">Universidad Veracruzana</div>
     </div>
   </div>
+  <button class="burger" id="burger" aria-label="Menú">☰</button>
+  <nav class="tnav" id="tnav">
+    <a href="#explorar" class="on">🔎 Explorar</a>
+    <a href="#reticulas">🖨️ Retículas</a>
+    <a href="#cadenas">📌 Antecedentes</a>
+    <a href="#ayuda">ℹ️ Ayuda</a>
+  </nav>
+  <button class="tprint" onclick="openPrintPicker()">🖨️ Imprimir retícula</button>
+</header>
 
-  <div class="result" id="resultado">
-    <div class="placeholder">
-      Selecciona un Plan para conocer su equivalente.
+<div class="wrap">
+
+  <section class="hero">
+    <div class="uvtag">UNIVERSIDAD VERACRUZANA · FACICO</div>
+    <h1>Equivalencias <em>Plan 2004 ↔ Plan 2025</em><br>y mapa de antecedentes</h1>
+    <p>Consulta qué Experiencia Educativa del otro plan corresponde a la tuya, qué antecedentes necesitas tener acreditados y descarga la retícula completa por áreas de formación —incluidas las áreas terminales— para Escolarizado y Abierto.</p>
+    <div class="hstats">
+      <div class="hs g"><b id="stTot">0</b><span>EXPERIENCIAS REGISTRADAS</span></div>
+      <div class="hs b"><b id="stEq">0</b><span>EQUIVALENCIAS DIRECTAS</span></div>
+      <div class="hs a"><b id="stAnt">0</b><span>CON ANTECEDENTE</span></div>
+      <div class="hs p"><b id="stNew">0</b><span>NUEVAS EN PLAN 2025</span></div>
     </div>
-  </div>
+  </section>
 
-  <footer>
-    <strong>Facultad de Ciencias y Técnicas de la Comunicación</strong><br>
-    Universidad Veracruzana · 2026<br>
-    <p><small>⚠️ La equivalencia definitiva se trámita en la Secretaría de la facultad.</small><br>
-    <small>⚜ Herramienta de apoyo diseñada por el docente <a href="mailto:alfreyes@tuv.mx">Dr. Alfredo Reyes Gutiérrez</a> para sus Tutorados.⚜</small></p>
-    <!-- ========================================================== -->
-<!--  Componente de Calificación con Estrellas y Contador de Visitas -->
-<!--  Diseñado para la Universidad Veracruzana                    -->
-<!-- ========================================================== -->
+  <section id="explorar"></section>
 
-<div style="max-width:800px; margin:20px auto; background:#fff; border-radius:12px; padding:20px 24px; box-shadow:0 2px 8px rgba(0,0,0,0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-
-  <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;">
-    <!-- Calificación con estrellas -->
-    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-      <div style="display:flex; gap:4px;" id="starContainer">
-        <!-- Las estrellas se generan con JS -->
+  <div class="deck">
+    <div class="deck-h">
+      <span class="lbl">🎛️ Panel de consulta</span>
+      <span class="live" id="liveCount">0 resultados</span>
+    </div>
+    <div class="deck-b">
+      <div class="seg" id="segDir">
+        <button data-d="fwd" class="on">📜 Plan 2004 → 🎓 Plan 2025</button>
+        <button data-d="rev" class="rev">🎓 Plan 2025 → 📜 Plan 2004</button>
+        <button data-d="both" class="both">🔁 Comparar ambos planes</button>
       </div>
-      <span id="ratingText" style="font-size:0.95em; color:#18529D; font-weight:600;">5.0 / 5</span>
-      <span id="votesText" style="font-size:0.85em; color:#4a5568;">(1 voto)</span>
-    </div>
-
-    <!-- Contador de visitas -->
-    <div style="display:flex; align-items:center; gap:6px; font-size:0.95em; color:#4a5568;">
-      <span style="font-size:1.2em;">👁️</span>
-      <span><span id="visitorCount">0</span> visitas</span>
+      <div class="ctrls">
+        <div class="fld wide">
+          <label for="q">🔍 Buscar experiencia, antecedente o equivalencia</label>
+          <input id="q" type="search" placeholder="Ej. Inglés II, Fotografía, Retícula, Periodismo…" autocomplete="off">
+        </div>
+        <div class="fld">
+          <label for="fArea">🧩 Área de formación</label>
+          <select id="fArea">
+            <option value="">Todas las áreas</option>
+            <option value="BAS">🧩 Básica</option>
+            <option value="DIS">🔬 Disciplinaria</option>
+            <option value="TER">🎯 Terminal</option>
+            <option value="LIB">🎲 Elección libre</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label for="fAc">🎬 Acentuación terminal</label>
+          <select id="fAc"><option value="">Todas</option></select>
+        </div>
+        <div class="fld">
+          <label for="fEq">🔁 Tipo de equivalencia</label>
+          <select id="fEq">
+            <option value="">Todas</option>
+            <option value="directa">✅ Directa</option>
+            <option value="parcial">⚠️ Parcial / revisar</option>
+            <option value="nueva">🆕 Nueva en 2025</option>
+            <option value="sin">⛔ Sin equivalente</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label for="fSort">↕️ Ordenar por</label>
+          <select id="fSort">
+            <option value="area">Área y nombre</option>
+            <option value="az">Nombre A → Z</option>
+            <option value="cr">Créditos (mayor)</option>
+            <option value="ant">Antecedentes primero</option>
+          </select>
+        </div>
+      </div>
+      <div class="chips">
+        <label class="tog amber"><input type="checkbox" id="tAnt"><i></i>📌 Solo con antecedente</label>
+        <label class="tog"><input type="checkbox" id="tDir"><i></i>✅ Solo equivalencia directa</label>
+        <div class="fld" style="flex-direction:row;align-items:center;gap:7px">
+          <select id="fView" style="padding:8px 11px;border:2px solid var(--line2);border-radius:10px;font-weight:800;font-size:.78rem;cursor:pointer">
+            <option value="cards">🗂️ Tarjetas</option>
+            <option value="table">📋 Tabla</option>
+          </select>
+        </div>
+        <div class="fld" style="flex-direction:row;align-items:center;gap:7px">
+          <select id="fDens" style="padding:8px 11px;border:2px solid var(--line2);border-radius:10px;font-weight:800;font-size:.78rem;cursor:pointer">
+            <option value="comoda">🔍 Cómoda</option>
+            <option value="compacta">📐 Compacta</option>
+          </select>
+        </div>
+        <button class="mini g" onclick="exportCSV()">📥 Exportar CSV</button>
+        <button class="mini p" onclick="openPrintPicker()">🖨️ Retículas</button>
+        <button class="mini gray" onclick="resetAll()">↺ Restablecer</button>
+      </div>
     </div>
   </div>
 
-  <p style="margin-top:10px; font-size:0.8em; color:#718096; border-top:1px solid #e2e8f0; padding-top:10px; display:flex; justify-content:space-between;">
-    <span>Estudiantes han utilizado esta herramienta</span>
-    <span id="lastVisit" style="font-size:0.75em;"></span>
-  </p>
-</div>
+  <div class="resbar">
+    <div>
+      <div class="cnt" id="resTitle">Plan 2004 → Plan 2025</div>
+      <div class="sub" id="resSub">Selecciona una experiencia para ver su ficha completa</div>
+    </div>
+    <div class="legend">
+      <span class="lg"><em style="background:var(--bas)"></em>Básica</span>
+      <span class="lg"><em style="background:var(--dis)"></em>Disciplinaria</span>
+      <span class="lg"><em style="background:var(--ter)"></em>Terminal</span>
+      <span class="lg"><em style="background:var(--lib)"></em>Elección libre</span>
+    </div>
+  </div>
 
-<script>
-  (function() {
-    // --- Configuración de claves de localStorage ---
-    const STORAGE_KEY_RATING = 'uv_lcc_rating';
-    const STORAGE_KEY_VOTES = 'uv_lcc_votes';
-    const STORAGE_KEY_VISITS = 'uv_lcc_visits';
+  <div id="results"></div>
 
-    // --- Obtener o inicializar datos ---
-    let rating = parseFloat(localStorage.getItem(STORAGE_KEY_RATING)) || 0;
-    let votes = parseInt(localStorage.getItem(STORAGE_KEY_VOTES)) || 0;
-    let visits = parseInt(localStorage.getItem(STORAGE_KEY_VISITS)) || 0;
+  <section class="sec" id="reticulas">
+    <div class="sec-h">
+      <div class="n">🖨️</div>
+      <h2>Retículas imprimibles por plan y modalidad</h2>
+      <p>Cada retícula se organiza por <strong>áreas de formación</strong> —Básica, Disciplinaria, Terminal (con sus acentuaciones) y Elección libre— e incluye créditos, antecedentes y equivalencia. Trae una columna en blanco para que anotes horario y salón (Escolarizado) o bloque y turno (Abierto).</p>
+    </div>
+    <div class="pgrid" id="printCards"></div>
+    <div class="note blue" style="margin-top:14px">
+      <b>📄 Cómo imprimir:</b> elige una retícula, revisa la vista previa y pulsa <b>Imprimir</b>. Cada área de formación comienza en una hoja nueva. En Abierto se incluye además el calendario de bloques como referencia.
+    </div>
+  </section>
 
-    // Incrementar visitas (una vez por carga de página)
-    visits += 1;
-    localStorage.setItem(STORAGE_KEY_VISITS, visits);
+  <section class="sec" id="cadenas">
+    <div class="sec-h">
+      <div class="n">📌</div>
+      <h2>Cadenas de antecedentes</h2>
+      <p>Estas son las rutas que debes tener acreditadas antes de cursar ciertas experiencias. Aplica <strong>igual en Escolarizado y en Abierto</strong>, para cada plan.</p>
+    </div>
+    <div class="chains" id="chains"></div>
+    <div class="note" style="margin-top:14px">
+      <b>⚠️ Importante:</b> el requisito de antecedente se verifica contra tu avance curricular (kardex). Esta herramienta es informativa: confirma tu caso con tu tutor o en la Secretaría de la Facultad antes de inscribir.
+    </div>
+  </section>
 
-    // --- Actualizar UI del contador ---
-    document.getElementById('visitorCount').textContent = visits;
+  <section class="sec" id="ayuda">
+    <div class="sec-h">
+      <div class="n">ℹ️</div>
+      <h2>Cómo leer esta herramienta</h2>
+    </div>
+    <div class="pgrid">
+      <div class="pc p04">
+        <div class="ph"><div class="pi">✅</div><div><h3>Equivalencia directa</h3><div class="sm">Mismo contenido</div></div></div>
+        <ul><li>La experiencia del otro plan cubre el mismo contenido con nombre actualizado.</li><li>Es la ruta más común entre planes.</li></ul>
+      </div>
+      <div class="pc p04">
+        <div class="ph"><div class="pi" style="background:linear-gradient(135deg,var(--amber),#ffc861)">⚠️</div><div><h3>Equivalencia parcial</h3><div class="sm">Requiere validación</div></div></div>
+        <ul><li>Hay correspondencia temática, pero no identidad total de contenido o créditos.</li><li><b>Debe dictaminarla la Secretaría de la Facultad.</b></li></ul>
+      </div>
+      <div class="pc p25">
+        <div class="ph"><div class="pi" style="background:linear-gradient(135deg,var(--info),#4dc9dd)">🆕</div><div><h3>Nueva en Plan 2025</h3><div class="sm">Sin origen en 2004</div></div></div>
+        <ul><li>Experiencia creada en el plan nuevo, sin equivalente hacia atrás.</li><li>Los alumnos de 2004 pueden cursarla como optativa si la Secretaría lo autoriza.</li></ul>
+      </div>
+      <div class="pc p04">
+        <div class="ph"><div class="pi" style="background:linear-gradient(135deg,var(--danger),#ff6b6b)">⛔</div><div><h3>Sin equivalente</h3><div class="sm">Ruta alternativa</div></div></div>
+        <ul><li>No hay experiencia correspondiente en el otro plan.</li><li>Consulta con tu tutor la ruta de acreditación alternativa.</li></ul>
+      </div>
+    </div>
+  </section>
 
-    // Mostrar fecha/hora de la última visita (opcional)
-    const now = new Date();
-    const lastVisitStr = now.toLocaleString('es-MX', { hour12: false });
-    document.getElementById('lastVisit').textContent = 'Última visita: ' + lastVisitStr;
-
-    // --- Renderizar estrellas ---
-    const starContainer = document.getElementById('starContainer');
-    const ratingText = document.getElementById('ratingText');
-    const votesText = document.getElementById('votesText');
-
-    // Función para actualizar la visualización de estrellas
-    function renderStars(activeStars) {
-      starContainer.innerHTML = '';
-      for (let i = 1; i <= 5; i++) {
-        const star = document.createElement('span');
-        star.style.fontSize = '1.6rem';
-        star.style.cursor = 'pointer';
-        star.style.transition = 'transform 0.1s';
-        star.style.display = 'inline-block';
-        star.style.lineHeight = '1';
-        star.style.color = (i <= activeStars) ? '#fbbf24' : '#d1d5db'; // amarillo / gris
-        star.textContent = '★';
-        star.dataset.value = i;
-        star.addEventListener('click', function(e) {
-          e.stopPropagation();
-          const selected = parseInt(this.dataset.value);
-          // Guardar nuevo voto
-          const newRating = (rating * votes + selected) / (votes + 1);
-          votes += 1;
-          rating = newRating;
-          localStorage.setItem(STORAGE_KEY_RATING, rating);
-          localStorage.setItem(STORAGE_KEY_VOTES, votes);
-          // Actualizar UI
-          renderStars(Math.round(rating));
-          ratingText.textContent = rating.toFixed(1) + ' / 5';
-          votesText.textContent = `(${votes} ${votes === 1 ? 'voto' : 'votos'})`;
-        });
-        // Efecto hover (opcional)
-        star.addEventListener('mouseenter', function() {
-          this.style.transform = 'scale(1.2)';
-        });
-        star.addEventListener('mouseleave', function() {
-          this.style.transform = 'scale(1)';
-        });
-        starContainer.appendChild(star);
-      }
-    }
-
-    // Mostrar calificación inicial (redondeo para estrellas llenas)
-    const initialActive = Math.round(rating);
-    renderStars(initialActive);
-    ratingText.textContent = rating.toFixed(1) + ' / 5';
-    votesText.textContent = `(${votes} ${votes === 1 ? 'voto' : 'votos'})`;
-
-    // Si no hay votos, mostrar mensaje especial
-    if (votes === 0) {
-      ratingText.textContent = '5.0 / 5'; // valor por defecto
-      votesText.textContent = '(0 votos)';
-      // Las estrellas se muestran en gris (0 activas)
-      renderStars(0);
-    }
-
-    // Opcional: permitir resetear (solo para pruebas) - lo dejamos comentado
-    // document.addEventListener('dblclick', function() {
-    //   localStorage.removeItem(STORAGE_KEY_RATING);
-    //   localStorage.removeItem(STORAGE_KEY_VOTES);
-    //   location.reload();
-    // });
-
-  })();
-</script>
+  <footer class="foot">
+    <p><b>Facultad de Ciencias y Técnicas de la Comunicación</b> · Universidad Veracruzana</p>
+    <p>Área Académica de Humanidades · Licenciatura en Ciencias de la Comunicación · Planes 2004 y 2025</p>
+    <p>Planea tu horario en <a href="https://gruporga-art.github.io/facico-apps/planeadorhorarios/" target="_blank" rel="noopener">Planeador de Horarios Facico</a> · Oferta oficial en <a href="https://www.uv.mx/veracruz/fcc/programacion-academica" target="_blank" rel="noopener">uv.mx/veracruz/fcc</a></p>
+    <p>Herramienta de apoyo diseñada por el docente <a href="mailto:alfreyes@uv.mx">Dr. Alfredo Reyes Gutiérrez</a> para sus Tutorados.</p>
+    <div class="warn">⚠️ La equivalencia definitiva se tramita en la Secretaría de la Facultad. Este documento es orientativo.</div>
   </footer>
 </div>
 
-<!-- Modal de Selección -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modalTitulo">Seleccionar materia</h3>
-      <button class="btn-cerrar" id="btnCerrarModal">&times;</button>
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dh" id="dh">
+    <button class="x" onclick="closeDrawer()" aria-label="Cerrar">✕</button>
+    <div class="kk" id="dKind"></div>
+    <h3 id="dName"></h3>
+    <div class="mm" id="dMeta"></div>
+  </div>
+  <div class="db" id="dBody"></div>
+  <div class="df">
+    <button class="cp" onclick="copyFicha()">📋 Copiar ficha</button>
+    <button class="go" onclick="openPrintPicker()">🖨️ Ver retícula</button>
+  </div>
+</aside>
+
+<div class="modal" id="mPrint">
+  <div class="mbox">
+    <div class="mh">
+      <h3 id="pvTitle">Vista previa de retícula</h3>
+      <button class="pri" onclick="doPrint()">🖨️ Imprimir</button>
+      <button onclick="closeModal('mPrint')">✕ Cerrar</button>
     </div>
-    <div class="modal-search">
-      <input type="text" id="modalBuscador" placeholder="Escribe para filtrar..." autocomplete="off">
-    </div>
-    <ul class="modal-list" id="modalLista">
-      <!-- Se llena dinámicamente -->
-    </ul>
+    <div class="mb"><div class="paper" id="pvBody"></div></div>
   </div>
 </div>
 
+<div class="modal" id="mPick">
+  <div class="mbox" style="max-width:760px">
+    <div class="mh"><h3>🖨️ Elige la retícula a imprimir</h3><button onclick="closeModal('mPick')">✕ Cerrar</button></div>
+    <div class="mb" style="background:#fff"><div class="pgrid" id="pickGrid"></div></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<div id="printRoot"></div>
+
 <script>
-// ============================================================
-// DATOS COMPLETOS DE EQUIVALENCIAS (71 registros del archivo Excel)
-// Incluye TODAS las materias del área básica, disciplinaria y terminal.
-// ============================================================
-const equivalencias = [
-  {m2004:"CULTURA E IDENTIDAD EN AMERICA LATINA I", cr2004:6, area2004:"Básica", m2025:"ESTUDIOS CULTURALES LATINOAMERICANOS", cr2025:6, area2025:"Básica"},
-  {m2004:"ECONOMIA Y COMUNICACION", cr2004:6, area2004:"Básica", m2025:"SOCIOECONOMIA DE LA COMUNICACION", cr2025:6, area2025:"Básica"},
-  {m2004:"INTRODUCCION A LA FILOSOFIA DE LA COMUNICACION", cr2004:6, area2004:"Básica", m2025:"FILOSOFIA DE LA COMUNICACION", cr2025:6, area2025:"Básica"},
-  {m2004:"CULTURA E IDENTIDAD EN AMERICA LATINA II", cr2004:6, area2004:"Disciplinaria", m2025:"COMUNICACION INTERCULTURAL", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"ETICA Y COMUNICACION", cr2004:6, area2004:"Disciplinaria", m2025:"ETICA Y COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"FILOSOFIA DE LA COMUNICACION", cr2004:6, area2004:"Disciplinaria", m2025:"FILOSOFIA Y PENSAMIENTO CONTEMPORANEO", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"HISTORIA CONTEMPORANEA DE MEXICO", cr2004:5, area2004:"Disciplinaria", m2025:"PERSPECTIVA HISTORICA DE LOS MEDIOS DE COMUNICACION EN MEXICO", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"PSICOLOGIA SOCIAL Y COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"COMUNICACION APLICADA EN PSICOLOGIA SOCIAL", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"REGIMEN JURIDICO DE LOS MEDIOS COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"MARCO LEGAL DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"SISTEMA POLITICO MEXICANO Y COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"ESTADO Y SOCIEDAD", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"INTRODUCCION A LA TEORIA DE LA COMUNICACION", cr2004:8, area2004:"Básica", m2025:"GENESIS Y EVOLUCION DE LA COMUNICACION", cr2025:8, area2025:"Básica"},
-  {m2004:"PSICOLOGIA COMUNICACION E INFORMACION", cr2004:8, area2004:"Básica", m2025:"TEORIAS PSICOLOGICAS EN LA COMUNICACION", cr2025:8, area2025:"Básica"},
-  {m2004:"COMUNICACION Y OPINION PUBLICA", cr2004:8, area2004:"Disciplinaria", m2025:"OPINION PUBLICA", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"SOCIOLOGIA DE LA COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"TENDENCIAS SOCIOLOGICAS DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"TEORIA DE LA COMUNICACION I", cr2004:8, area2004:"Disciplinaria", m2025:"TEORIAS CLASICAS DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"TEORIA DE LA COMUNICACION II", cr2004:8, area2004:"Disciplinaria", m2025:"ESTUDIOS CONTEMPORANEOS DE LA COMUNICACION", cr2025:8, area2025:"Disciplinaria"},
-  {m2004:"TEORIAS DE LA ADMINISTRACION PARA LA COMUNICACION", cr2004:6, area2004:"Básica", m2025:"TEORIAS ADMINISTRATICAS PARA LA COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"COMUNICACION INTERNA EN LAS ORGANIZACIONES", cr2004:6, area2004:"Disciplinaria", m2025:"ENDOMARKETING", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"ESTRATEGIAS DE COMUNICACION CORPORATIVA", cr2004:4, area2004:"Disciplinaria", m2025:"COMUNICACION CORPORATIVA", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"PROYECTOS DE COMUNICACION Y DESARROLLO DE EMPRENDEDORES", cr2004:5, area2004:"Disciplinaria", m2025:"EMPRENDIMIENTO EN COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"RELACIONES PUBLICAS CORPORATIVAS", cr2004:6, area2004:"Disciplinaria", m2025:"RELACIONES PUBLICAS APLICADAS", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"TALLER DE FOTOGRAFIA I", cr2004:6, area2004:"Básica", m2025:"FOTOGRAFIA BASICA", cr2025:6, area2025:"Básica"},
-  {m2004:"TALLER DE FOTOGRAFIA II", cr2004:6, area2004:"Disciplinaria", m2025:"FOTOGRAFIA ESPECIALIZADA", cr2025:4, area2025:"Disciplinaria"},
-  {m2004:"TALLER DE TELEVISION Y VIDEO I", cr2004:5, area2004:"Disciplinaria", m2025:"PRINCIPIOS DE LA PRODUCCION AUDIOVISUAL", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"TALLER DE HIPERMEDIA I", cr2004:5, area2004:"Disciplinaria", m2025:"HIPERMEDIA", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"INTRODUCCION A LA TEORIA DEL LENGUAJE", cr2004:8, area2004:"Básica", m2025:"TEORIA DEL LENGUAJE", cr2025:8, area2025:"Básica"},
-  {m2004:"SEMIOTICA GENERAL", cr2004:8, area2004:"Disciplinaria", m2025:"SEMIOTICA SOCIAL", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"TEORIA DEL LENGUAJE", cr2004:8, area2004:"Disciplinaria", m2025:"DISCURSO Y PODER", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"TRADUCCION DE TEXTOS EN COMUNICACION", cr2004:4, area2004:"Disciplinaria", m2025:"CULTURA Y LINGUISTICA DE TEXTOS EN COMUNICACION", cr2025:4, area2025:"Disciplinaria"},
-  {m2004:"INTRODUCCION A LOS METODOS DE LAS CIENCIAS SOCIALES", cr2004:8, area2004:"Básica", m2025:"INVESTIGACION EN EL CAMPO DE LA COMUNICACION", cr2025:8, area2025:"Básica"},
-  {m2004:"INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION", cr2004:8, area2004:"Disciplinaria", m2025:"PLANEACION Y DISEÑO DE PROYECTOS DE INVESTIGACION", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"TECNICAS DE INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION", cr2004:6, area2004:"Disciplinaria", m2025:"LABORATORIO DE INVESTIGACION EN COMUNICACION", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"GUIONISMO", cr2004:3, area2004:"Básica", m2025:"GUIONISMO", cr2025:4, area2025:"Básica"},
-  {m2004:"TALLER DE REDACCION: NOTA INFORMATIVA Y ENTREVISTA", cr2004:4, area2004:"Básica", m2025:"TEXTOS PERIODISTICOS INFORMATIVOS MULTIMEDIOS", cr2025:5, area2025:"Básica"},
-  {m2004:"TALLER DE REDACCION: CRONICA", cr2004:4, area2004:"Disciplinaria", m2025:"PERIODISMO NARRATIVO MULTIMEDIA", cr2025:4, area2025:"Disciplinaria"},
-  {m2004:"TALLER DE REDACCION: REPORTAJE", cr2004:4, area2004:"Disciplinaria", m2025:"PERIODISMO INTERPRETATIVO MULTIMEDIA", cr2025:4, area2025:"Disciplinaria"},
-  {m2004:"PERIODISMO DE INVESTIGACION", cr2004:6, area2004:"Disciplinaria", m2025:"PERIODISMO DE INVESTIGACION", cr2025:6, area2025:"Disciplinaria"},
-  {m2004:"TALLER DE DISEÑO EDITORIAL", cr2004:4, area2004:"Disciplinaria", m2025:"DISEÑO Y PRODUCCION EDITORIAL", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"COMUNICACION Y DESARROLLO ECONOMICO SUSTENTABLE", cr2004:5, area2004:"Disciplinaria", m2025:"ECONOMIA Y COMUNICACION PARA EL DESARROLLO SUSTENTABLE", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"PLANEACION Y COMUNICACION ESTRATEGICA", cr2004:8, area2004:"Disciplinaria", m2025:"COMUNICACION PARA EL DESARROLLO DEL TALENTO HUMANO", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"INTRODUCCION A LA COMUNICACION PUBLICITARIA", cr2004:6, area2004:"Básica", m2025:"INTRODUCCION A LA COMUNICACION PUBLICITARIA Y POLITICA", cr2025:6, area2025:"Básica"},
-  {m2004:"CAMPAÑAS DE COMUNICACION PUBLICITARIA Y POLITICA", cr2004:6, area2004:"Disciplinaria", m2025:"CAMPAÑAS PUBLICITARIAS Y POLITICAS", cr2025:4, area2025:"Terminal Comunicación Organizacional"},
-  {m2004:"DISEÑO Y CREATIVIDAD GRAFICA EN PUBLICIDAD", cr2004:6, area2004:"Disciplinaria", m2025:"DISEÑO CREATIVO DE MENSAJES PUBLICITARIOS Y POLITICOS", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"ESTRATEGIAS PARA LA PRODUCCION DE PUBLICIDAD Y PROPAGANDA", cr2004:5, area2004:"Disciplinaria", m2025:"ESTRATEGIAS DE COMUNICACION POLITICA", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"FUNDAMENTOS DEL MEDIO RADIOFONICO", cr2004:4, area2004:"Básica", m2025:"FUNDAMENTOS DE LA PRODUCCION SONORA", cr2025:5, area2025:"Básica"},
-  {m2004:"REALIZACION DE PROYECTOS RADIOFONICOS", cr2004:4, area2004:"Disciplinaria", m2025:"PRODUCCION DE PROYECTOS SONOROS", cr2025:4, area2025:"Disciplinaria"},
-  {m2004:"ANALISIS CINEMATOGRAFICO", cr2004:6, area2004:"Terminal Nuevas Tecnologías", m2025:"CINE, ESTETICA Y REALIZACION", cr2025:4, area2025:"Terminal Comunicación Digital"},
-  {m2004:"ANIMACION DIGITAL", cr2004:4, area2004:"Terminal Nuevas Tecnologías", m2025:"ANIMACION MULTIPLATAFORMA", cr2025:5, area2025:"Terminal Comunicación Digital"},
-  {m2004:"PROYECTOS RADIOFONICOS EXPERIMENTALES", cr2004:4, area2004:"Terminal Nuevas Tecnologías", m2025:"PRODUCCION SONORA AVANZADA", cr2025:5, area2025:"Terminal Comunicación Digital"},
-  {m2004:"TALLER DE HIPERMEDIA II", cr2004:5, area2004:"Terminal Nuevas Tecnologías", m2025:"PRODUCCION DE INTERFACES GRAFICAS INTERACTIVAS", cr2025:5, area2025:"Terminal Comunicación Digital"},
-  {m2004:"TALLER DE LA COMUNICACION GRAFICA", cr2004:4, area2004:"Terminal Nuevas Tecnologías", m2025:"COMUNICACION VISUAL EN MEDIOS DIGITALES", cr2025:4, area2025:"Terminal Comunicación Digital"},
-  {m2004:"TALLER DE TELEVISION Y VIDEO II", cr2004:5, area2004:"Terminal Nuevas Tecnologías", m2025:"CREACION DE CONTENIDOS PARA TELEVISION Y MULTIPLATAFORMA", cr2025:5, area2025:"Terminal Comunicación Digital"},
-  {m2004:"COMPORTAMIENTO ORGANIZACIONAL Y MEJORA CONTINUA", cr2004:5, area2004:"Terminal Comunicación Organizacional", m2025:"PROCESOS DE CAMBIO EN LAS ORGANIZACIONES", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
-  {m2004:"ECONOMIA DE LA INFORMACION Y GLOBALIZACION", cr2004:5, area2004:"Terminal Comunicación Organizacional", m2025:"ECONOMIA DE LA INFORMACION Y GLOBALIZACION", cr2025:5, area2025:"Disciplinaria"},
-  {m2004:"ESTRATEGIAS COMUNICACIONALES PARA LA CAPACITACION", cr2004:6, area2004:"Terminal Comunicación Organizacional", m2025:"COMUNICACION PARA LA FORMACION DE CAPITAL HUMANO", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
-  {m2004:"MEDIOS DE COMUNICACION INTERNA EN EL TRABAJO", cr2004:6, area2004:"Terminal Comunicación Organizacional", m2025:"SOCIAL MEDIA CORPORATIVA", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
-  {m2004:"TEORIA Y PRACTICA DE LA ADMINISTRACION DE EMPRESAS DE COMUNICACION", cr2004:6, area2004:"Terminal Comunicación Organizacional", m2025:"EMPRESAS DE COMUNICACION Y MODELO DE NEGOCIOS", cr2025:5, area2025:"Terminal Comunicación Organizacional"},
-  {m2004:"SERVICIO SOCIAL", cr2004:12, area2004:"Terminal", m2025:"SERVICIO SOCIAL", cr2025:12, area2025:"Terminal"},
-  {m2004:"EXPERIENCIA RECEPCIONAL", cr2004:12, area2004:"Terminal", m2025:"EXPERIENCIA RECEPCIONAL", cr2025:12, area2025:"Terminal"},
-  {m2004:"ANALISIS DEL DISCURSO PERIODISTICO", cr2004:4, area2004:"Terminal Periodismo", m2025:"DISCURSO Y PERIODISMO", cr2025:4, area2025:"Terminal Periodismo"},
-  {m2004:"CORRECCION DEL ESTILO EN MEDIOS DE COMUNICACION", cr2004:4, area2004:"Terminal Periodismo", m2025:"CURADURIA DE DATOS PERIODISTICOS", cr2025:4, area2025:"Terminal Periodismo"},
-  {m2004:"DISEÑO EDITORIAL ASISTIDO POR COMPUTADORA", cr2004:4, area2004:"Terminal Periodismo", m2025:"ESPECIALIZACION EN DISEÑO Y PRODUCCION EDITORIAL", cr2025:4, area2025:"Terminal Periodismo"},
-  {m2004:"PERIODISMO DIGITAL", cr2004:6, area2004:"Terminal Periodismo", m2025:"CIBERPERIODISMO", cr2025:5, area2025:"Terminal Periodismo"},
-  {m2004:"PERIODISMO ESPECIALIZADO", cr2004:6, area2004:"Terminal Periodismo", m2025:"ESPECIALIZACION PERIODISTICA", cr2025:6, area2025:"Terminal Periodismo"},
-  {m2004:"TALLER DE REDACCION: GENEROS DE OPINION", cr2004:4, area2004:"Terminal Periodismo", m2025:"PERIODISMO DE OPINION", cr2025:5, area2025:"Terminal Periodismo"},
-  {m2004:"COMPUTACION BASICA", cr2004:6, area2004:"Básica", m2025:"LITERACIDAD DIGITAL", cr2025:4, area2025:"Básica"},
-  {m2004:"HABILIDADES DEL PENSAMIENTO CRITICO Y CREATIVO", cr2004:6, area2004:"Básica", m2025:"PENSAMIENTO CRITICO PARA LA SOLUCION DE PROBLEMAS", cr2025:4, area2025:"Básica"},
-  {m2004:"INGLES I", cr2004:6, area2004:"Básica", m2025:"LENGUA I", cr2025:4, area2025:"Básica"},
-  {m2004:"INGLES II", cr2004:6, area2004:"Básica", m2025:"LENGUA II", cr2025:4, area2025:"Básica"},
-  {m2004:"LECTURA Y REDACCION A TRAVES DEL ANALISIS DEL MUNDO CONTEMPORANEO", cr2004:6, area2004:"Básica", m2025:"LECTURA Y ESCRITURA DE TEXTOS ACADEMICOS", cr2025:4, area2025:"Básica"},
-  // Materias del Plan 2025 sin equivalente en Plan 2004 (solo transferencia a AFEL)
-  {m2004:null, cr2004:0, area2004:null, m2025:"DISEÑO DEL PROTOCOLO DE INVESTIGACION", cr2025:4, area2025:"Disciplinaria", sinEquivalencia:true},
-  {m2004:null, cr2004:0, area2004:null, m2025:"CONSULTORIA EN COMUNICACION", cr2025:4, area2025:"Terminal Comunicación Organizacional", sinEquivalencia:true},
-  {m2004:null, cr2004:0, area2004:null, m2025:"PRACTICAS PROFESIONALES", cr2025:4, area2025:"Terminal", sinEquivalencia:true}
+/* ══════════════════════════════════════════════════════════
+   CATÁLOGO CURRICULAR · LCC · PLANES 2004 Y 2025
+   Fuente: Plan de Estudios del Programa, Ciencias de la
+   Comunicación (UV) — Escolarizado y Abierto.
+   cr = créditos · ant = antecedentes · eq = equivalencias
+   t  = directa | parcial | nueva | sin
+   ══════════════════════════════════════════════════════════ */
+const AREAS={
+  BAS:{n:'Área de Formación Básica',ic:'🧩',c:'bas',short:'Básica'},
+  DIS:{n:'Área de Formación Disciplinaria',ic:'🔬',c:'dis',short:'Disciplinaria'},
+  TER:{n:'Área de Formación Terminal',ic:'🎯',c:'ter',short:'Terminal'},
+  LIB:{n:'Área de Formación de Elección Libre',ic:'🎲',c:'lib',short:'Elección libre'}
+};
+const ACENTS=['Comunicación Digital','Periodismo','Comunicación Organizacional'];
+
+function E(n,a,cr,ant,eq,t,ac){return{n,a,cr,ant:ant||[],eq:eq||[],t:t||'directa',ac:ac||''}}
+
+const P04=[
+/* ── BÁSICA · 109 CR ── */
+E('INGLES I','BAS',6,[],['LENGUA I']),
+E('COMPUTACION BASICA','BAS',6,[],['LITERACIDAD DIGITAL']),
+E('HABILIDADES DEL PENSAMIENTO CRITICO Y CREATIVO','BAS',6,[],['PENSAMIENTO CRITICO PARA LA SOLUCION DE PROBLEMAS']),
+E('INGLES II','BAS',6,['INGLES I'],['LENGUA II']),
+E('LECTURA Y REDACCION A TRAVES DEL ANALISIS DEL MUNDO CONTEMPORANEO','BAS',6,[],['LECTURA Y ESCRITURA DE TEXTOS ACADEMICOS']),
+E('CULTURA E IDENTIDAD EN AMERICA LATINA I','BAS',6,[],['ESTUDIOS CULTURALES LATINOAMERICANOS'],'parcial'),
+E('ECONOMIA Y COMUNICACION','BAS',6,[],['SOCIOECONOMIA DE LA COMUNICACION']),
+E('INTRODUCCION A LA FILOSOFIA DE LA COMUNICACION','BAS',6,[],['FILOSOFIA DE LA COMUNICACION']),
+E('INTRODUCCION A LA TEORIA DE LA COMUNICACION','BAS',8,[],['GENESIS Y EVOLUCION DE LA COMUNICACION']),
+E('PSICOLOGIA COMUNICACION E INFORMACION','BAS',8,[],['TEORIAS PSICOLOGICAS EN LA COMUNICACION']),
+E('TEORIAS DE LA ADMINISTRACION PARA LA COMUNICACION','BAS',6,[],['TEORIAS ADMINISTRATICAS PARA LA COMUNICACION']),
+E('TALLER DE FOTOGRAFIA I','BAS',6,[],['FOTOGRAFIA BASICA']),
+E('INTRODUCCION A LA TEORIA DEL LENGUAJE','BAS',8,[],['TEORIA DEL LENGUAJE']),
+E('INTRODUCCION A LOS METODOS DE LAS CIENCIAS SOCIALES','BAS',8,[],['INVESTIGACION EN EL CAMPO DE LA COMUNICACION']),
+E('GUIONISMO','BAS',3,[],['GUIONISMO']),
+E('TALLER DE REDACCION: NOTA INFORMATIVA Y ENTREVISTA','BAS',4,[],['TEXTOS PERIODISTICOS INFORMATIVOS']),
+E('INTRODUCCION A LA COMUNICACION PUBLICITARIA','BAS',6,[],['INTRODUCCION A LA COMUNICACION PUBLICITARIA Y POLITICA']),
+E('FUNDAMENTOS DEL MEDIO RADIOFONICO','BAS',4,[],['FUNDAMENTOS DE LA PRODUCCION SONORA']),
+/* ── DISCIPLINARIA · 202 CR ── */
+E('CULTURA E IDENTIDAD EN AMERICA LATINA II','DIS',6,['CULTURA E IDENTIDAD EN AMERICA LATINA I'],['ESTUDIOS CULTURALES LATINOAMERICANOS'],'parcial'),
+E('ETICA Y COMUNICACION','DIS',6,[],['ETICA Y COMUNICACION']),
+E('FILOSOFIA DE LA COMUNICACION','DIS',6,['INTRODUCCION A LA FILOSOFIA DE LA COMUNICACION'],['FILOSOFIA Y PENSAMIENTO CONTEMPORANEO']),
+E('HISTORIA CONTEMPORANEA DE MEXICO','DIS',5,[],['PERSPECTIVA HISTORICA DE LOS MEDIOS DE COMUNICACION EN MEXICO']),
+E('PSICOLOGIA SOCIAL Y COMUNICACION','DIS',8,[],['COMUNICACION APLICADA EN PSICOLOGIA SOCIAL']),
+E('REGIMEN JURIDICO DE LOS MEDIOS COMUNICACION','DIS',8,[],['MARCO LEGAL DE LA COMUNICACION']),
+E('SISTEMA POLITICO MEXICANO Y COMUNICACION','DIS',8,[],['ESTADO Y SOCIEDAD']),
+E('COMUNICACION Y OPINION PUBLICA','DIS',8,[],['OPINION PUBLICA']),
+E('SOCIOLOGIA DE LA COMUNICACION','DIS',8,[],['TENDENCIAS SOCIOLOGICAS DE LA COMUNICACION']),
+E('TEORIA DE LA COMUNICACION I','DIS',8,['INTRODUCCION A LA TEORIA DE LA COMUNICACION'],['TEORIAS CLASICAS DE LA COMUNICACION']),
+E('TEORIA DE LA COMUNICACION II','DIS',8,['TEORIA DE LA COMUNICACION I'],['ESTUDIOS CONTEMPORANEOS DE LA COMUNICACION']),
+E('COMUNICACION INTERNA EN LAS ORGANIZACIONES','DIS',6,[],['ENDOMARKETING']),
+E('ESTRATEGIAS DE COMUNICACION CORPORATIVA','DIS',4,[],['COMUNICACION CORPORATIVA']),
+E('PROYECTOS DE COMUNICACION Y DESARROLLO DE EMPRENDEDORES','DIS',5,[],['EMPRENDIMIENTO EN COMUNICACION']),
+E('RELACIONES PUBLICAS CORPORATIVAS','DIS',6,[],['RELACIONES PUBLICAS APLICADAS']),
+E('TALLER DE FOTOGRAFIA II','DIS',6,['TALLER DE FOTOGRAFIA I'],['FOTOGRAFIA ESPECIALIZADA']),
+E('TALLER DE TELEVISION Y VIDEO I','DIS',5,[],['PRINCIPIOS DE LA PRODUCCION AUDIOVISUAL']),
+E('TALLER DE HIPERMEDIA I','DIS',5,[],['HIPERMEDIA']),
+E('SEMIOTICA GENERAL','DIS',8,[],['SEMIOTICA SOCIAL']),
+E('TEORIA DEL LENGUAJE','DIS',8,['INTRODUCCION A LA TEORIA DEL LENGUAJE'],['DISCURSO Y PODER']),
+E('TRADUCCION DE TEXTOS EN COMUNICACION','DIS',4,[],['CULTURA Y LINGUISTICA DE TEXTOS EN COMUNICACION']),
+E('INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION','DIS',8,[],['PLANEACION Y DISEÑO DE PROYECTOS DE INVESTIGACION']),
+E('TECNICAS DE INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION','DIS',6,[],['LABORATORIO DE INVESTIGACION EN COMUNICACION','DISEÑO DEL PROTOCOLO DE INVESTIGACION'],'parcial'),
+E('TALLER DE REDACCION: CRONICA','DIS',4,[],['PERIODISMO NARRATIVO MULTIMEDIA']),
+E('TALLER DE REDACCION: REPORTAJE','DIS',4,[],['PERIODISMO INTERPRETATIVO MULTIMEDIA']),
+E('PERIODISMO DE INVESTIGACION','DIS',6,[],['PERIODISMO DE INVESTIGACION']),
+E('TALLER DE DISEÑO EDITORIAL','DIS',4,[],['DISEÑO Y PRODUCCION EDITORIAL']),
+E('COMUNICACION Y DESARROLLO ECONOMICO SUSTENTABLE','DIS',5,[],['ECONOMIA Y COMUNICACION PARA EL DESARROLLO SUSTENTABLE']),
+E('PLANEACION Y COMUNICACION ESTRATEGICA','DIS',8,[],['PROCESOS DE CAMBIO EN LAS ORGANIZACIONES'],'parcial'),
+E('CAMPAÑAS DE COMUNICACION PUBLICITARIA Y POLITICA','DIS',6,[],['CAMPAÑAS PUBLICITARIAS Y POLITICAS']),
+E('DISEÑO Y CREATIVIDAD GRAFICA EN PUBLICIDAD','DIS',6,[],['DISEÑO CREATIVO DE MENSAJES PUBLICITARIOS Y POLITICOS']),
+E('ESTRATEGIAS PARA LA PRODUCCION DE PUBLICIDAD Y PROPAGANDA','DIS',5,['DISEÑO Y CREATIVIDAD GRAFICA EN PUBLICIDAD'],['DISEÑO CREATIVO DE MENSAJES PUBLICITARIOS Y POLITICOS'],'parcial'),
+E('REALIZACION DE PROYECTOS RADIOFONICOS','DIS',4,[],['PRODUCCION DE PROYECTOS SONOROS']),
+/* ── TERMINAL · 84 CR ofertados / 52 mínimos ── */
+E('ANALISIS CINEMATOGRAFICO','TER',6,[],['CINE, ESTETICA Y REALIZACION']),
+E('ANIMACION DIGITAL','TER',4,[],['ANIMACION MULTIPLATAFORMA']),
+E('PROYECTOS RADIOFONICOS EXPERIMENTALES','TER',4,[],['PRODUCCION SONORA AVANZADA']),
+E('TALLER DE HIPERMEDIA II','TER',5,['TALLER DE HIPERMEDIA I'],['PRODUCCION DE INTERFACES GRAFICAS INTERACTIVAS']),
+E('TALLER DE LA COMUNICACION GRAFICA','TER',4,[],['COMUNICACION VISUAL EN MEDIOS DIGITALES']),
+E('TALLER DE TELEVISION Y VIDEO II','TER',5,['TALLER DE TELEVISION Y VIDEO I'],['CREACION DE CONTENIDOS PARA TELEVISION Y MULTIPLATAFORMA']),
+E('COMPORTAMIENTO ORGANIZACIONAL Y MEJORA CONTINUA','TER',5,[],['PROCESOS DE CAMBIO EN LAS ORGANIZACIONES'],'parcial'),
+E('ECONOMIA DE LA INFORMACION Y GLOBALIZACION','TER',5,[],['ECONOMIA DE LA INFORMACION Y GLOBALIZACION']),
+E('ESTRATEGIAS COMUNICACIONALES PARA LA CAPACITACION','TER',6,[],['COMUNICACION PARA LA FORMACION DE CAPITAL HUMANO']),
+E('MEDIOS DE COMUNICACION INTERNA EN EL TRABAJO','TER',6,[],['ENDOMARKETING'],'parcial'),
+E('TEORIA Y PRACTICA DE LA ADMINISTRACION DE EMPRESAS DE COMUNICACION','TER',6,[],['EMPRESAS DE COMUNICACION Y MODELO DE NEGOCIOS']),
+E('ANALISIS DEL DISCURSO PERIODISTICO','TER',4,[],['DISCURSO Y PERIODISMO']),
+E('CORRECCION DEL ESTILO EN MEDIOS DE COMUNICACION','TER',4,[],['ESPECIALIZACION PERIODISTICA'],'parcial'),
+E('DISEÑO EDITORIAL ASISTIDO POR COMPUTADORA','TER',4,['TALLER DE DISEÑO EDITORIAL'],['ESPECIALIZACION EN DISEÑO Y PRODUCCION EDITORIAL']),
+E('PERIODISMO DIGITAL','TER',6,[],['CIBERPERIODISMO']),
+E('PERIODISMO ESPECIALIZADO','TER',6,[],['ESPECIALIZACION PERIODISTICA'],'parcial'),
+E('TALLER DE REDACCION: GENEROS DE OPINION','TER',4,[],['PERIODISMO DE OPINION']),
+E('SERVICIO SOCIAL','TER',4,[],['SERVICIO SOCIAL']),
+E('EXPERIENCIA RECEPCIONAL','TER',12,[],['EXPERIENCIA RECEPCIONAL']),
+/* ── ELECCIÓN LIBRE ── */
+E('OPTATIVAS DE ELECCION LIBRE','LIB',28,[],['ELECCION LIBRE'],'parcial')
 ];
 
-// ============================================================
-// LÓGICA DE LA APLICACIÓN
-// ============================================================
-const direccion = document.getElementById('direccion');
-const infoDireccion = document.getElementById('infoDireccion');
-const btnAbrirModal = document.getElementById('btnAbrirModal');
-const modalOverlay = document.getElementById('modalOverlay');
-const modalTitulo = document.getElementById('modalTitulo');
-const btnCerrarModal = document.getElementById('btnCerrarModal');
-const modalBuscador = document.getElementById('modalBuscador');
-const modalLista = document.getElementById('modalLista');
-const resultado = document.getElementById('resultado');
-const materiaSeleccionadaDiv = document.getElementById('materiaSeleccionada');
-const textoMateriaSeleccionada = document.getElementById('textoMateriaSeleccionada');
-const btnCambiar = document.getElementById('btnCambiar');
+const P25=[
+/* ── BÁSICA · 96 CR ── */
+E('LENGUA I','BAS',4,[],['INGLES I']),
+E('LITERACIDAD DIGITAL','BAS',4,[],['COMPUTACION BASICA']),
+E('PENSAMIENTO CRITICO PARA LA SOLUCION DE PROBLEMAS','BAS',4,[],['HABILIDADES DEL PENSAMIENTO CRITICO Y CREATIVO']),
+E('LENGUA II','BAS',4,['LENGUA I'],['INGLES II']),
+E('LECTURA Y ESCRITURA DE TEXTOS ACADEMICOS','BAS',4,[],['LECTURA Y REDACCION A TRAVES DEL ANALISIS DEL MUNDO CONTEMPORANEO']),
+E('FOTOGRAFIA BASICA','BAS',6,[],['TALLER DE FOTOGRAFIA I']),
+E('GUIONISMO','BAS',4,[],['GUIONISMO']),
+E('FUNDAMENTOS DE LA PRODUCCION SONORA','BAS',5,[],['FUNDAMENTOS DEL MEDIO RADIOFONICO']),
+E('TEORIA DEL LENGUAJE','BAS',8,[],['INTRODUCCION A LA TEORIA DEL LENGUAJE']),
+E('GENESIS Y EVOLUCION DE LA COMUNICACION','BAS',8,[],['INTRODUCCION A LA TEORIA DE LA COMUNICACION']),
+E('INTRODUCCION A LA COMUNICACION PUBLICITARIA Y POLITICA','BAS',6,[],['INTRODUCCION A LA COMUNICACION PUBLICITARIA']),
+E('INVESTIGACION EN EL CAMPO DE LA COMUNICACION','BAS',8,[],['INTRODUCCION A LOS METODOS DE LAS CIENCIAS SOCIALES']),
+E('TEXTOS PERIODISTICOS INFORMATIVOS','BAS',5,[],['TALLER DE REDACCION: NOTA INFORMATIVA Y ENTREVISTA']),
+E('MULTIMEDIOS','BAS',6,[],[],'sin'),
+E('ESTUDIOS CULTURALES LATINOAMERICANOS','BAS',6,[],['CULTURA E IDENTIDAD EN AMERICA LATINA I','CULTURA E IDENTIDAD EN AMERICA LATINA II'],'parcial'),
+E('SOCIOECONOMIA DE LA COMUNICACION','BAS',6,[],['ECONOMIA Y COMUNICACION']),
+E('FILOSOFIA DE LA COMUNICACION','BAS',4,[],['INTRODUCCION A LA FILOSOFIA DE LA COMUNICACION']),
+E('TEORIAS PSICOLOGICAS EN LA COMUNICACION','BAS',4,[],['PSICOLOGIA COMUNICACION E INFORMACION']),
+/* ── DISCIPLINARIA · 204 CR ── */
+E('FOTOGRAFIA ESPECIALIZADA','DIS',4,['FOTOGRAFIA BASICA'],['TALLER DE FOTOGRAFIA II']),
+E('PRINCIPIOS DE LA PRODUCCION AUDIOVISUAL','DIS',6,[],['TALLER DE TELEVISION Y VIDEO I']),
+E('HIPERMEDIA','DIS',6,['MULTIMEDIOS'],['TALLER DE HIPERMEDIA I']),
+E('PRODUCCION DE PROYECTOS SONOROS','DIS',4,[],['REALIZACION DE PROYECTOS RADIOFONICOS']),
+E('TEORIAS CLASICAS DE LA COMUNICACION','DIS',8,['GENESIS Y EVOLUCION DE LA COMUNICACION'],['TEORIA DE LA COMUNICACION I']),
+E('COMUNICACION INTERCULTURAL','DIS',6,[],[],'nueva'),
+E('SEMIOTICA SOCIAL','DIS',6,[],['SEMIOTICA GENERAL']),
+E('DISCURSO Y PODER','DIS',6,[],['TEORIA DEL LENGUAJE']),
+E('CULTURA Y LINGUISTICA DE TEXTOS EN COMUNICACION','DIS',4,[],['TRADUCCION DE TEXTOS EN COMUNICACION']),
+E('ESTUDIOS CONTEMPORANEOS DE LA COMUNICACION','DIS',8,[],['TEORIA DE LA COMUNICACION II']),
+E('TEORIAS ADMINISTRATICAS PARA LA COMUNICACION','DIS',6,[],['TEORIAS DE LA ADMINISTRACION PARA LA COMUNICACION']),
+E('EMPRENDIMIENTO EN COMUNICACION','DIS',6,[],['PROYECTOS DE COMUNICACION Y DESARROLLO DE EMPRENDEDORES']),
+E('COMUNICACION CORPORATIVA','DIS',5,[],['ESTRATEGIAS DE COMUNICACION CORPORATIVA']),
+E('ENDOMARKETING','DIS',6,[],['COMUNICACION INTERNA EN LAS ORGANIZACIONES','MEDIOS DE COMUNICACION INTERNA EN EL TRABAJO'],'parcial'),
+E('RELACIONES PUBLICAS APLICADAS','DIS',6,[],['RELACIONES PUBLICAS CORPORATIVAS']),
+E('COMUNICACION PARA EL DESARROLLO DEL TALENTO HUMANO','DIS',5,[],['ESTRATEGIAS COMUNICACIONALES PARA LA CAPACITACION']),
+E('ESTRATEGIAS DE COMUNICACION POLITICA','DIS',5,[],[],'nueva'),
+E('DISEÑO CREATIVO DE MENSAJES PUBLICITARIOS Y POLITICOS','DIS',5,[],['DISEÑO Y CREATIVIDAD GRAFICA EN PUBLICIDAD','ESTRATEGIAS PARA LA PRODUCCION DE PUBLICIDAD Y PROPAGANDA'],'parcial'),
+E('PLANEACION Y DISEÑO DE PROYECTOS DE INVESTIGACION','DIS',6,[],['INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION']),
+E('LABORATORIO DE INVESTIGACION EN COMUNICACION','DIS',6,[],['TECNICAS DE INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION'],'parcial'),
+E('DISEÑO DEL PROTOCOLO DE INVESTIGACION','DIS',4,[],['TECNICAS DE INVESTIGACION CUANTITATIVA Y CUALITATIVA EN COMUNICACION'],'parcial'),
+E('PERIODISMO NARRATIVO MULTIMEDIA','DIS',4,['TEXTOS PERIODISTICOS INFORMATIVOS'],['TALLER DE REDACCION: CRONICA']),
+E('PERIODISMO INTERPRETATIVO MULTIMEDIA','DIS',4,[],['TALLER DE REDACCION: REPORTAJE']),
+E('PERIODISMO DE INVESTIGACION','DIS',6,[],['PERIODISMO DE INVESTIGACION']),
+E('DISEÑO Y PRODUCCION EDITORIAL','DIS',5,[],['TALLER DE DISEÑO EDITORIAL']),
+E('ETICA Y COMUNICACION','DIS',6,[],['ETICA Y COMUNICACION']),
+E('FILOSOFIA Y PENSAMIENTO CONTEMPORANEO','DIS',6,[],['FILOSOFIA DE LA COMUNICACION']),
+E('PERSPECTIVA HISTORICA DE LOS MEDIOS DE COMUNICACION EN MEXICO','DIS',5,[],['HISTORIA CONTEMPORANEA DE MEXICO']),
+E('COMUNICACION APLICADA EN PSICOLOGIA SOCIAL','DIS',8,[],['PSICOLOGIA SOCIAL Y COMUNICACION']),
+E('MARCO LEGAL DE LA COMUNICACION','DIS',8,[],['REGIMEN JURIDICO DE LOS MEDIOS COMUNICACION']),
+E('ESTADO Y SOCIEDAD','DIS',8,[],['SISTEMA POLITICO MEXICANO Y COMUNICACION']),
+E('OPINION PUBLICA','DIS',8,[],['COMUNICACION Y OPINION PUBLICA']),
+E('TENDENCIAS SOCIOLOGICAS DE LA COMUNICACION','DIS',8,[],['SOCIOLOGIA DE LA COMUNICACION']),
+E('ECONOMIA Y COMUNICACION PARA EL DESARROLLO SUSTENTABLE','DIS',5,[],['COMUNICACION Y DESARROLLO ECONOMICO SUSTENTABLE']),
+E('ECONOMIA DE LA INFORMACION Y GLOBALIZACION','DIS',5,[],['ECONOMIA DE LA INFORMACION Y GLOBALIZACION']),
+/* ── TERMINAL · 84 ofertados / 56 mínimos ── */
+E('CINE, ESTETICA Y REALIZACION','TER',4,[],['ANALISIS CINEMATOGRAFICO'],'directa','Comunicación Digital'),
+E('ANIMACION MULTIPLATAFORMA','TER',5,[],['ANIMACION DIGITAL'],'directa','Comunicación Digital'),
+E('PRODUCCION SONORA AVANZADA','TER',5,[],['PROYECTOS RADIOFONICOS EXPERIMENTALES'],'directa','Comunicación Digital'),
+E('PRODUCCION DE INTERFACES GRAFICAS INTERACTIVAS','TER',5,[],['TALLER DE HIPERMEDIA II'],'directa','Comunicación Digital'),
+E('COMUNICACION VISUAL EN MEDIOS DIGITALES','TER',4,[],['TALLER DE LA COMUNICACION GRAFICA'],'directa','Comunicación Digital'),
+E('CREACION DE CONTENIDOS PARA TELEVISION Y MULTIPLATAFORMA','TER',5,[],['TALLER DE TELEVISION Y VIDEO II'],'directa','Comunicación Digital'),
+E('ESPECIALIZACION PERIODISTICA','TER',6,[],['PERIODISMO ESPECIALIZADO','CORRECCION DEL ESTILO EN MEDIOS DE COMUNICACION'],'parcial','Periodismo'),
+E('DISCURSO Y PERIODISMO','TER',4,[],['ANALISIS DEL DISCURSO PERIODISTICO'],'directa','Periodismo'),
+E('ESPECIALIZACION EN DISEÑO Y PRODUCCION EDITORIAL','TER',4,[],['DISEÑO EDITORIAL ASISTIDO POR COMPUTADORA'],'directa','Periodismo'),
+E('CIBERPERIODISMO','TER',5,[],['PERIODISMO DIGITAL'],'directa','Periodismo'),
+E('PERIODISMO DE OPINION','TER',5,[],['TALLER DE REDACCION: GENEROS DE OPINION'],'directa','Periodismo'),
+E('CURADURIA DE DATOS PERIODISTICOS','TER',4,[],[],'nueva','Periodismo'),
+E('PROCESOS DE CAMBIO EN LAS ORGANIZACIONES','TER',5,[],['COMPORTAMIENTO ORGANIZACIONAL Y MEJORA CONTINUA','PLANEACION Y COMUNICACION ESTRATEGICA'],'parcial','Comunicación Organizacional'),
+E('COMUNICACION PARA LA FORMACION DE CAPITAL HUMANO','TER',5,[],['ESTRATEGIAS COMUNICACIONALES PARA LA CAPACITACION'],'directa','Comunicación Organizacional'),
+E('SOCIAL MEDIA CORPORATIVA','TER',5,[],[],'nueva','Comunicación Organizacional'),
+E('EMPRESAS DE COMUNICACION Y MODELO DE NEGOCIOS','TER',5,[],['TEORIA Y PRACTICA DE LA ADMINISTRACION DE EMPRESAS DE COMUNICACION'],'directa','Comunicación Organizacional'),
+E('CAMPAÑAS PUBLICITARIAS Y POLITICAS','TER',4,[],['CAMPAÑAS DE COMUNICACION PUBLICITARIA Y POLITICA'],'directa','Comunicación Organizacional'),
+E('CONSULTORIA EN COMUNICACION','TER',4,[],[],'nueva','Comunicación Organizacional'),
+E('PRACTICAS PROFESIONALES','TER',4,[],[],'nueva'),
+E('SERVICIO SOCIAL','TER',4,[],['SERVICIO SOCIAL']),
+E('EXPERIENCIA RECEPCIONAL','TER',12,[],['EXPERIENCIA RECEPCIONAL']),
+/* ── ELECCIÓN LIBRE ── */
+E('ELECCION LIBRE','LIB',24,[],['OPTATIVAS DE ELECCION LIBRE'],'parcial')
+];
 
-let materiaActual = null;
+const AREA_TOTALS={
+  '04':{BAS:{t:35,p:39,o:0,cr:109,min:109},DIS:{t:73,p:56,o:0,cr:202,min:202},TER:{cr:84,min:52},LIB:{cr:28,min:28},total:391},
+  '25':{BAS:{t:32,p:12,o:26,cr:96,min:96},DIS:{t:69,p:66,o:0,cr:204,min:204},TER:{cr:84,min:56},LIB:{cr:24,min:24},total:380}
+};
+const BLOQUES=[
+  {n:'Bloque 1',f:'22 y 29 ago, 5 sep'},{n:'Bloque 2',f:'12, 19 y 26 sep'},
+  {n:'Bloque 3',f:'3, 10 y 17 oct'},{n:'Bloque 4',f:'24 y 31 oct, 7 nov'},{n:'Bloque 5',f:'14, 21 y 28 nov'}
+];
 
-function normalizeText(text) {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+/* ══════════ ESTADO ══════════ */
+const S={dir:'fwd',q:'',area:'',ac:'',eq:'',sort:'area',view:'cards',dens:'comoda',onlyAnt:false,onlyDir:false,cur:null};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nz=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const pretty=s=>String(s||'').toLowerCase().replace(/(^|[\s\-–—/:,(])([a-záéíóúñ])/g,(m,a,b)=>a+b.toUpperCase());
+const TLAB={directa:'✅ Directa',parcial:'⚠️ Parcial',nueva:'🆕 Nueva 2025',sin:'⛔ Sin equivalente'};
+const TCLS={directa:'dir',parcial:'par',nueva:'new',sin:'non'};
+
+function srcList(){return S.dir==='rev'?P25:P04}
+function srcPlan(){return S.dir==='rev'?'25':'04'}
+function dstPlan(){return S.dir==='rev'?'04':'25'}
+function findEE(plan,name){const L=plan==='04'?P04:P25;return L.find(x=>x.n===name)||null}
+
+function toast(msg,k){
+  const d=document.createElement('div');d.className='toast'+(k?' '+k:'');d.textContent=msg;
+  $('toasts').appendChild(d);setTimeout(()=>{d.style.transition='.3s';d.style.opacity='0';d.style.transform='translateX(28px)';setTimeout(()=>d.remove(),320)},3600);
 }
 
-function actualizarVista() {
-  const dir = direccion.value;
-  materiaActual = null;
-  materiaSeleccionadaDiv.classList.remove('activo');
-  resultado.innerHTML = '<div class="placeholder">Selecciona tu plan y toca "Seleccionar una experiencia educativa" para ver su equivalencia.</div>';
+/* ══════════ FILTRADO ══════════ */
+function filtered(){
+  const L=srcList(),q=nz(S.q);
+  let out=L.filter(e=>{
+    if(S.area&&e.a!==S.area)return false;
+    if(S.ac&&e.ac!==S.ac)return false;
+    if(S.eq&&e.t!==S.eq)return false;
+    if(S.onlyAnt&&!e.ant.length)return false;
+    if(S.onlyDir&&e.t!=='directa')return false;
+    if(q){
+      const hay=nz(e.n+' '+e.ant.join(' ')+' '+e.eq.join(' ')+' '+AREAS[e.a].n+' '+e.ac);
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+  const ord={BAS:0,DIS:1,TER:2,LIB:3};
+  if(S.sort==='az')out.sort((a,b)=>a.n.localeCompare(b.n,'es'));
+  else if(S.sort==='cr')out.sort((a,b)=>b.cr-a.cr||a.n.localeCompare(b.n,'es'));
+  else if(S.sort==='ant')out.sort((a,b)=>(b.ant.length?1:0)-(a.ant.length?1:0)||a.n.localeCompare(b.n,'es'));
+  else out.sort((a,b)=>ord[a.a]-ord[b.a]||ACENTS.indexOf(a.ac)-ACENTS.indexOf(b.ac)||a.n.localeCompare(b.n,'es'));
+  return out;
+}
 
-  if (dir === '2004a2025') {
-    infoDireccion.textContent = 'Toca el botón de abajo para buscar una experiencia del Plan 2004 y conocer su equivalencia en el Plan 2025.';
-    modalTitulo.textContent = 'Materias del Plan 2004';
-  } else {
-    infoDireccion.textContent = 'Toca el botón de abajo para buscar una experiencia del Plan 2025 y conocer su equivalencia en el Plan 2004.';
-    modalTitulo.textContent = 'Materias del Plan 2025';
+/* ══════════ RENDER ══════════ */
+function eqHTML(e){
+  if(!e.eq.length){
+    return `<div class="eq"><span class="k">Equivalencia ${dstPlan()==='25'?'Plan 2025':'Plan 2004'}</span><span class="v" style="color:var(--danger-d)">⛔ Sin equivalente registrado</span></div>`;
   }
+  const names=e.eq.map(n=>{
+    const t=findEE(dstPlan(),n);
+    return esc(t?pretty(t.n):pretty(n));
+  }).join(' · ');
+  return `<div class="eq"><span class="k">Equivale en ${dstPlan()==='25'?'Plan 2025':'Plan 2004'}</span><span class="arrow">➜</span><span class="v">${names}</span></div>`;
 }
-
-direccion.addEventListener('change', actualizarVista);
-
-function abrirModal() {
-  modalOverlay.classList.add('activo');
-  modalBuscador.value = '';
-  modalBuscador.focus();
-  filtrarLista('');
+function cardHTML(e,i){
+  const a=AREAS[e.a];
+  return `<article class="ec k-${e.a}" data-i="${i}" tabindex="0">
+    <div class="hd"><h4>${esc(pretty(e.n))}</h4><span class="cr">${e.cr} cr</span></div>
+    <div class="tags">
+      <span class="tg plan">${a.ic} ${a.short}</span>
+      <span class="tg ${TCLS[e.t]}">${TLAB[e.t]}</span>
+      ${e.ac?`<span class="tg ac">🎬 ${esc(e.ac)}</span>`:''}
+      ${e.ant.length?`<span class="tg ant">📌 ${e.ant.length} antecedente${e.ant.length>1?'s':''}</span>`:''}
+    </div>
+    ${e.ant.length?`<div class="antline">📌 Requiere: <b>${e.ant.map(n=>esc(pretty(n))).join(' + ')}</b></div>`:''}
+    ${eqHTML(e)}
+    <span class="more">Ver ficha ➜</span>
+  </article>`;
 }
-
-function cerrarModal() {
-  modalOverlay.classList.remove('activo');
-}
-
-btnAbrirModal.addEventListener('click', abrirModal);
-btnCerrarModal.addEventListener('click', cerrarModal);
-btnCambiar.addEventListener('click', abrirModal);
-modalOverlay.addEventListener('click', (e) => {
-  if (e.target === modalOverlay) cerrarModal();
-});
-
-function filtrarLista(query) {
-  const dir = direccion.value;
-  const q = normalizeText(query);
-  modalLista.innerHTML = '';
-  
-  let opciones = [];
-  if (dir === '2004a2025') {
-    opciones = equivalencias.filter(e => e.m2004).map(e => ({
-      nombre: e.m2004,
-      area: e.area2004,
-      data: e
-    }));
-  } else {
-    opciones = equivalencias.map(e => ({
-      nombre: e.m2025,
-      area: e.area2025,
-      data: e
-    }));
-  }
-
-  const filtradas = q ? opciones.filter(o => normalizeText(o.nombre).includes(q)) : opciones;
-
-  if (filtradas.length === 0) {
-    modalLista.innerHTML = '<li class="modal-empty">No se encontraron experiencias educativas con ese nombre.</li>';
+function render(){
+  const list=filtered();
+  $('liveCount').textContent=list.length+' resultado'+(list.length===1?'':'s');
+  $('resTitle').textContent=S.dir==='both'?'🔁 Comparación Plan 2004 ↔ Plan 2025':(S.dir==='fwd'?'📜 Plan 2004 → 🎓 Plan 2025':'🎓 Plan 2025 → 📜 Plan 2004');
+  $('resSub').textContent=list.length?'Toca cualquier experiencia para abrir su ficha completa':'Ajusta la búsqueda o los filtros';
+  const box=$('results');
+  if(!list.length){
+    box.innerHTML=`<div class="empty"><div class="big">🔍</div><h3>Sin resultados</h3><p>Prueba con otro término o restablece los filtros.</p></div>`;
     return;
   }
-
-  filtradas.forEach(op => {
-    const li = document.createElement('li');
-    li.className = 'modal-item';
-    li.innerHTML = `<strong>${op.nombre}</strong><small>${op.area || 'Sin área asignada'}</small>`;
-    li.addEventListener('click', () => {
-      seleccionarMateria(op.data);
-    });
-    modalLista.appendChild(li);
+  if(S.dir==='both'){renderCompare(list);return}
+  if(S.view==='table'){renderTable(list);return}
+  const groups={};list.forEach(e=>{(groups[e.a]=groups[e.a]||[]).push(e)});
+  let html='';
+  ['BAS','DIS','TER','LIB'].forEach(k=>{
+    if(!groups[k])return;
+    const a=AREAS[k],tot=AREA_TOTALS[srcPlan()][k];
+    const cr=groups[k].reduce((s,e)=>s+e.cr,0);
+    let inner='';
+    if(k==='TER'&&srcPlan()==='25'){
+      const byAc={};groups[k].forEach(e=>{const key=e.ac||'__';(byAc[key]=byAc[key]||[]).push(e)});
+      ACENTS.forEach(ac=>{
+        if(!byAc[ac])return;
+        inner+=`<div class="accent"><div class="accent-h">🎬 Acentuación · ${esc(ac)} <span style="margin-left:auto;font-weight:800">${byAc[ac].length} EEs</span></div><div class="grid ${S.dens==='compacta'?'dense':''}">${byAc[ac].map(e=>cardHTML(e,list.indexOf(e))).join('')}</div></div>`;
+      });
+      if(byAc['__'])inner+=`<div class="accent"><div class="accent-h">📋 Requisitos de titulación</div><div class="grid ${S.dens==='compacta'?'dense':''}">${byAc['__'].map(e=>cardHTML(e,list.indexOf(e))).join('')}</div></div>`;
+    }else{
+      inner=`<div class="grid ${S.dens==='compacta'?'dense':''}">${groups[k].map(e=>cardHTML(e,list.indexOf(e))).join('')}</div>`;
+    }
+    html+=`<section class="agroup a-${k}">
+      <div class="ahead"><span class="ic">${a.ic}</span><h3>${a.n}</h3>
+        <div class="meta"><span class="pill">${groups[k].length} experiencias</span><span class="pill">${cr} créditos listados</span>${tot&&tot.min?`<span class="pill">Mínimo ${tot.min} cr</span>`:''}</div>
+      </div><div class="abody">${inner}</div></section>`;
+  });
+  box.innerHTML=html;
+  box.querySelectorAll('.ec').forEach(el=>{
+    const e=list[+el.dataset.i];
+    el.addEventListener('click',()=>openDrawer(e));
+    el.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openDrawer(e)}});
   });
 }
-
-modalBuscador.addEventListener('input', (e) => {
-  filtrarLista(e.target.value);
-});
-
-function seleccionarMateria(data) {
-  materiaActual = data;
-  const dir = direccion.value;
-  const nombreMostrar = dir === '2004a2025' ? data.m2004 : data.m2025;
-  
-  textoMateriaSeleccionada.textContent = nombreMostrar;
-  materiaSeleccionadaDiv.classList.add('activo');
-  cerrarModal();
-
-  const dirLabel = dir === '2004a2025' ? '2004a2025' : '2025a2004';
-  mostrarEquivalenciaUI(data, dirLabel);
+function renderTable(list){
+  const rows=list.map((e,i)=>`<tr data-i="${i}">
+    <td class="n">${esc(pretty(e.n))}</td>
+    <td>${AREAS[e.a].ic} ${AREAS[e.a].short}${e.ac?'<br><small style="color:var(--ter-d);font-weight:800">🎬 '+esc(e.ac)+'</small>':''}</td>
+    <td class="c">${e.cr}</td>
+    <td style="color:var(--amber-d);font-weight:700">${e.ant.length?e.ant.map(n=>esc(pretty(n))).join(' + '):'—'}</td>
+    <td style="color:${e.eq.length?'var(--bas-d)':'var(--danger-d)'};font-weight:700">${e.eq.length?e.eq.map(n=>esc(pretty(n))).join(' · '):'Sin equivalente'}</td>
+    <td><span class="tg ${TCLS[e.t]}">${TLAB[e.t]}</span></td></tr>`).join('');
+  $('results').innerHTML=`<div class="tblwrap"><table class="rt">
+    <thead><tr><th>Experiencia · Plan ${srcPlan()==='04'?'2004':'2025'}</th><th>Área</th><th>CR</th><th>📌 Antecedentes</th><th>🔁 Equivalencia ${dstPlan()==='25'?'2025':'2004'}</th><th>Tipo</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+  $('results').querySelectorAll('tbody tr').forEach(tr=>tr.addEventListener('click',()=>openDrawer(list[+tr.dataset.i])));
+}
+function renderCompare(list){
+  const pairs=[];const seen=new Set();
+  P04.forEach(a=>{
+    if(!matchFilter(a))return;
+    const key=a.n;seen.add(key);
+    const b=a.eq.length?findEE('25',a.eq[0]):null;
+    pairs.push({a,b,t:a.t,extra:a.eq.slice(1)});
+    if(b)seen.add(b.n);
+  });
+  P25.forEach(b=>{
+    if(seen.has(b.n))return;
+    if(!matchFilter(b))return;
+    pairs.push({a:null,b,t:b.t,extra:[]});
+  });
+  if(!pairs.length){$('results').innerHTML=`<div class="empty"><div class="big">🔁</div><h3>Sin coincidencias</h3></div>`;return}
+  $('liveCount').textContent=pairs.length+' pares';
+  const rows=pairs.map((p,i)=>{
+    const L=p.a?`<div class="nm">${esc(pretty(p.a.n))}</div><div class="mt">${AREAS[p.a.a].ic} ${AREAS[p.a.a].short} · ${p.a.cr} cr${p.a.ant.length?' · 📌 '+p.a.ant.length+' ant.':''}</div>`:`<div class="none">— No existe en Plan 2004 —</div>`;
+    const R=p.b?`<div class="nm">${esc(pretty(p.b.n))}</div><div class="mt">${AREAS[p.b.a].ic} ${AREAS[p.b.a].short} · ${p.b.cr} cr${p.b.ac?' · 🎬 '+esc(p.b.ac):''}${p.extra.length?'<br>+ '+p.extra.map(n=>esc(pretty(n))).join(' · '):''}</div>`:`<div class="none">— Sin equivalente en Plan 2025 —</div>`;
+    const ic=p.t==='directa'?'✅':p.t==='parcial'?'⚠️':p.t==='nueva'?'🆕':'⛔';
+    return `<div class="cmp-r" data-i="${i}"><div>${L}</div><div class="mid" title="${TLAB[p.t]}">${ic}</div><div>${R}</div></div>`;
+  }).join('');
+  $('results').innerHTML=`<div class="cmp"><div class="cmp-h"><div>📜 PLAN 2004</div><div class="mid">🔁</div><div>🎓 PLAN 2025</div></div>${rows}</div>`;
+  $('results').querySelectorAll('.cmp-r').forEach(r=>r.addEventListener('click',()=>{
+    const p=pairs[+r.dataset.i];openDrawer(p.a||p.b,p.a?'04':'25');
+  }));
+}
+function matchFilter(e){
+  const q=nz(S.q);
+  if(S.area&&e.a!==S.area)return false;
+  if(S.ac&&e.ac!==S.ac)return false;
+  if(S.eq&&e.t!==S.eq)return false;
+  if(S.onlyAnt&&!e.ant.length)return false;
+  if(S.onlyDir&&e.t!=='directa')return false;
+  if(q&&!nz(e.n+' '+e.ant.join(' ')+' '+e.eq.join(' ')+' '+e.ac).includes(q))return false;
+  return true;
 }
 
-function renderCard(titulo, nombre, cred, area, esDestino, emoji) {
-  const clase = esDestino ? 'card destino' : 'card';
-  return `
-    <div class="${clase}">
-      <h3>${emoji} ${titulo}</h3>
-      <p><strong>${nombre}</strong></p>
-      <p>
-        <span class="badge badge-cred">${cred} créditos</span>
-        <span class="badge badge-area">${area}</span>
-      </p>
+/* ══════════ DRAWER ══════════ */
+function openDrawer(e,forcePlan){
+  if(!e)return;
+  const plan=forcePlan||srcPlan();
+  S.cur={e,plan};
+  const a=AREAS[e.a];
+  $('dh').className='dh k-'+e.a;
+  $('dKind').textContent=a.ic+' '+a.n+' · PLAN '+(plan==='04'?'2004':'2025');
+  $('dName').textContent=pretty(e.n);
+  $('dMeta').innerHTML=`<span>${e.cr} créditos</span><span>${TLAB[e.t]}</span>${e.ac?'<span>🎬 '+esc(e.ac)+'</span>':''}${plan==='04'?'<span>Escolarizado y Abierto</span>':'<span>Escolarizado y Abierto</span>'}`;
+  const other=plan==='04'?'25':'04';
+  let body='';
+  if(e.ant.length){
+    body+=`<div class="blk ant"><div class="bh">📌 Antecedentes requeridos</div><div class="bb">
+      <div class="txt">Debes tener acreditada${e.ant.length>1?'s':''} la${e.ant.length>1?'s':''} siguiente${e.ant.length>1?'s':''} experiencia${e.ant.length>1?'s':''} <b>antes</b> de cursar esta:</div>
+      ${e.ant.map(n=>{const t=findEE(plan,n);return `<div class="ritem" data-p="${plan}" data-n="${esc(n)}"><span class="ri">📌</span><span class="rt"><span class="rn">${esc(pretty(n))}</span><span class="rm">${t?AREAS[t.a].ic+' '+AREAS[t.a].short:'Plan '+(plan==='04'?'2004':'2025')}</span></span>${t?`<span class="rc">${t.cr} cr</span>`:''}</div>`}).join('')}
+    </div></div>`;
+  }else{
+    body+=`<div class="blk ant"><div class="bh">📌 Antecedentes</div><div class="bb"><div class="txt">✅ Esta experiencia <b>no requiere antecedente</b>. Puedes inscribirla según la disponibilidad de la oferta.</div></div></div>`;
+  }
+  const cls=e.t==='directa'?'':e.t==='parcial'?'par':e.t==='nueva'?'new':'non';
+  body+=`<div class="blk eq ${cls}"><div class="bh">🔁 Equivalencia en Plan ${other==='04'?'2004':'2025'} · ${TLAB[e.t]}</div><div class="bb">`;
+  if(e.eq.length){
+    body+=e.eq.map(n=>{const t=findEE(other,n);return `<div class="ritem" data-p="${other}" data-n="${esc(n)}"><span class="ri">${e.t==='directa'?'✅':'⚠️'}</span><span class="rt"><span class="rn">${esc(pretty(n))}</span><span class="rm">${t?AREAS[t.a].ic+' '+AREAS[t.a].short+(t.ac?' · 🎬 '+t.ac:''):'Plan '+(other==='04'?'2004':'2025')}${t&&t.ant.length?' · 📌 '+t.ant.length+' ant.':''}</span></span>${t?`<span class="rc">${t.cr} cr</span>`:''}</div>`}).join('');
+    if(e.t==='parcial')body+=`<div class="txt">⚠️ La correspondencia es <b>parcial</b>: puede haber diferencia de contenido o créditos. La equivalencia debe dictaminarla la <b>Secretaría de la Facultad</b>.</div>`;
+    else body+=`<div class="txt">✅ Correspondencia de contenido. Confirma el trámite en la Secretaría de la Facultad.</div>`;
+  }else{
+    body+=`<div class="txt">${e.t==='nueva'?'🆕 Esta experiencia es <b>nueva en el Plan 2025</b> y no tiene origen en el Plan 2004. Consulta con tu tutor si puedes cursarla como optativa.':'⛔ No hay equivalente registrado en el otro plan. Consulta con tu tutor la ruta de acreditación alternativa.'}</div>`;
+  }
+  body+=`</div></div>`;
+  const chain=buildChain(e,plan);
+  if(chain.length>1){
+    body+=`<div class="blk"><div class="bh" style="background:#eef3fa;color:var(--navy-700);border-bottom:1px solid var(--line)">🧭 Ruta de acreditación</div><div class="bb">
+      ${chain.map((n,i)=>{const t=findEE(plan,n);return `<div class="step ${i===chain.length-1?'last':''}"><span class="dot">${i+1}</span><span class="nm">${esc(pretty(n))}</span><span class="cr">${t?t.cr+' cr':''}</span></div>`+(i<chain.length-1?'<div class="arrows">↓</div>':'')}).join('')}
+    </div></div>`;
+  }
+  body+=`<div class="blk"><div class="bh" style="background:#eef3fa;color:var(--navy-700);border-bottom:1px solid var(--line)">🏫 Modalidades</div><div class="bb"><div class="txt">
+    <b>🏫 Escolarizado:</b> clases de lunes a viernes en horario fijo durante todo el periodo.<br>
+    <b>📚 Abierto:</b> la experiencia se imparte en un <b>bloque</b> (1 a 5, matutino o vespertino) durante <b>tres sábados</b>. Los antecedentes aplican igual.</div></div></div>`;
+  $('dBody').innerHTML=body;
+  $('dBody').querySelectorAll('.ritem').forEach(el=>el.addEventListener('click',()=>{
+    const t=findEE(el.dataset.p,el.dataset.n);
+    if(t)openDrawer(t,el.dataset.p);else toast('Registro no encontrado en el catálogo','w');
+  }));
+  $('scrim').classList.add('on');$('drawer').classList.add('on');$('drawer').setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+}
+function closeDrawer(){$('scrim').classList.remove('on');$('drawer').classList.remove('on');$('drawer').setAttribute('aria-hidden','true');document.body.style.overflow=''}
+function buildChain(e,plan){
+  const out=[];const seen=new Set();
+  (function walk(x,d){
+    if(!x||d>6||seen.has(x.n))return;seen.add(x.n);
+    if(x.ant.length)walk(findEE(plan,x.ant[0]),d+1);
+    out.push(x.n);
+  })(e,0);
+  return out;
+}
+function copyFicha(){
+  if(!S.cur)return;
+  const {e,plan}=S.cur;
+  const t=[`PLAN ${plan==='04'?'2004':'2025'} · ${AREAS[e.a].n}`,pretty(e.n),`Créditos: ${e.cr}`,
+    `Antecedentes: ${e.ant.length?e.ant.map(pretty).join(' + '):'Ninguno'}`,
+    `Equivalencia Plan ${plan==='04'?'2025':'2004'}: ${e.eq.length?e.eq.map(pretty).join(' · '):'Sin equivalente'}`,
+    `Tipo: ${TLAB[e.t]}`,e.ac?`Acentuación: ${e.ac}`:'',
+    'Fuente: Equivalencias LCC · Facico · Universidad Veracruzana'].filter(Boolean).join('\n');
+  navigator.clipboard?.writeText(t).then(()=>toast('Ficha copiada al portapapeles 📋')).catch(()=>toast('No se pudo copiar','w'));
+}
+
+/* ══════════ RETÍCULA ══════════ */
+function retHTML(plan,mod){
+  const L=plan==='04'?P04:P25;
+  const tot=AREA_TOTALS[plan];
+  const modN=mod==='E'?'Escolarizado':'Abierto';
+  const other=plan==='04'?'25':'04';
+  const blank=mod==='E'?'Horario / Salón':'Bloque / Turno';
+  let h=`<div class="ret">
+    <div class="ret-h">
+      <div class="u">UNIVERSIDAD VERACRUZANA · FACULTAD DE CIENCIAS Y TÉCNICAS DE LA COMUNICACIÓN</div>
+      <h2>Retícula curricular · Plan ${plan==='04'?'2004':'2025'} · ${modN}</h2>
+      <div class="s">Licenciatura en Ciencias de la Comunicación · Área Académica de Humanidades</div>
+      <div class="m">Experiencias Educativas por área de formación, con antecedentes y equivalencia al Plan ${other==='04'?'2004':'2025'}</div>
+    </div>
+    <div class="ret-meta">
+      <span>📚 ${L.length} experiencias</span>
+      <span>🎓 Créditos mínimos del plan: ${tot.total}</span>
+      <span>${mod==='E'?'🏫 Lunes a viernes':'📚 Sábados por bloques'}</span>
+      <span>📌 Los antecedentes aplican en ambas modalidades</span>
     </div>`;
-}
-
-function mostrarEquivalenciaUI(match, dir) {
-  if (dir === '2004a2025') {
-    const origen = { nombre: match.m2004, cr: match.cr2004, area: match.area2004 };
-    const destino = { nombre: match.m2025, cr: match.cr2025, area: match.area2025 };
-    resultado.innerHTML = mostrarEquivalenciaHTML(origen, destino, 'Plan 2004 (origen)', 'Equivalente en Plan 2025', '📖', '✅', '⬇️');
-  } else {
-    if (match.sinEquivalencia) {
-      resultado.innerHTML = `
-        ${renderCard('Plan 2025 (origen)', match.m2025, match.cr2025, match.area2025, false, '📖')}
-        <div class="arrow">⬇️</div>
-        <div class="card transferencia">
-          <h3>🔸 Sin equivalencia directa al Plan 2004</h3>
-          <p>Esta materia <strong>no tiene equivalencia</strong> con ninguna experiencia educativa del Plan 2004.</p>
-          <p style="margin-top:8px;">Se reconoce únicamente como <strong>transferencia de créditos al Área de Formación de Elección Libre (AFEL)</strong>.</p>
-        </div>`;
-      return;
+  if(mod==='A'){
+    h+=`<div class="ret-cal"><h4>📅 Calendario de bloques · referencia (periodo Agosto 2026 – Enero 2027)</h4>
+      <table><thead><tr>${BLOQUES.map(b=>`<th>${b.n}</th>`).join('')}</tr></thead>
+      <tbody><tr>${BLOQUES.map(b=>`<td>${b.f}</td>`).join('')}</tr></tbody></table>
+      <div style="font-size:.62rem;margin-top:6px;color:#5b21b6">Cada experiencia se imparte en un bloque durante tres sábados, en turno matutino o vespertino. Verifica el calendario oficial vigente de la Facultad.</div></div>`;
+  }
+  const order=['BAS','DIS','TER','LIB'];
+  order.forEach((k,idx)=>{
+    const items=L.filter(e=>e.a===k);
+    if(!items.length)return;
+    const a=AREAS[k],t=tot[k];
+    h+=`<div class="ret-sec${idx>0?' newpage':''}">
+      <div class="ret-sh ${a.c}"><h3>${a.ic} ${a.n}</h3>
+        <span class="t">${items.length} EEs</span>
+        ${t.min?`<span class="t">Mínimo ${t.min} cr</span>`:''}
+        ${t.t!=null?`<span class="t">T ${t.t} · P ${t.p} · O ${t.o}</span>`:''}
+      </div>`;
+    const tbl=arr=>{
+      const sum=arr.reduce((s,e)=>s+e.cr,0);
+      return `<table class="ret-t"><thead><tr>
+        <th style="width:30%">Experiencia Educativa</th><th style="width:34px">CR</th>
+        <th style="width:24%">📌 Antecedentes</th><th style="width:24%">🔁 Equivalencia Plan ${other==='04'?'2004':'2025'}</th>
+        <th style="width:96px">✍️ ${blank}</th></tr></thead><tbody>
+        ${arr.map(e=>`<tr>
+          <td class="n">${esc(pretty(e.n))}</td>
+          <td class="c">${e.cr}</td>
+          <td class="a">${e.ant.length?e.ant.map(n=>esc(pretty(n))).join(' + '):'—'}</td>
+          <td class="e ${e.t==='parcial'?'par':(e.eq.length?'':'non')}">${e.eq.length?(e.t==='parcial'?'⚠️ ':'')+e.eq.map(n=>esc(pretty(n))).join(' · '):(e.t==='nueva'?'🆕 Nueva en 2025':'⛔ Sin equivalente')}</td>
+          <td class="w"></td></tr>`).join('')}
+        <tr class="tot"><td>Subtotal listado</td><td class="c">${sum}</td><td colspan="3">${t.min?`Créditos mínimos requeridos en el área: ${t.min}`:''}</td></tr>
+      </tbody></table>`;
+    };
+    if(k==='TER'&&plan==='25'){
+      ACENTS.forEach(ac=>{
+        const g=items.filter(e=>e.ac===ac);
+        if(!g.length)return;
+        h+=`<div class="ret-ah">🎬 Acentuación · ${esc(ac)} · ${g.length} experiencias</div>`+tbl(g);
+      });
+      const rest=items.filter(e=>!e.ac);
+      if(rest.length)h+=`<div class="ret-ah">📋 Requisitos de titulación y servicio</div>`+tbl(rest);
+      h+=`<div style="font-size:.64rem;margin-top:6px;color:#5b21b6"><b>Nota:</b> en el área Terminal el estudiante elige una acentuación. Se ofertan ${t.cr} créditos y se requiere un mínimo de ${t.min}.</div>`;
+    }else{
+      h+=tbl(items);
+      if(k==='TER')h+=`<div style="font-size:.64rem;margin-top:6px;color:#5b21b6"><b>Nota:</b> se ofertan ${t.cr} créditos en el área Terminal; el mínimo a acreditar es ${t.min}.</div>`;
+      if(k==='LIB')h+=`<div style="font-size:.64rem;margin-top:6px;color:#b45309"><b>Nota:</b> los créditos de elección libre se acreditan con experiencias optativas de cualquier área, según la oferta vigente y la autorización de la Facultad.</div>`;
     }
-    const origen = { nombre: match.m2025, cr: match.cr2025, area: match.area2025 };
-    const destino = { nombre: match.m2004, cr: match.cr2004, area: match.area2004 };
-    resultado.innerHTML = mostrarEquivalenciaHTML(origen, destino, 'Plan 2025 (origen)', 'Equivalente en Plan 2004', '📖', '✅', '⬆️');
-  }
+    h+=`</div>`;
+  });
+  h+=`<div class="ret-f">
+    <b>Leyenda:</b> CR = créditos · 📌 Antecedente = experiencia que debe estar acreditada previamente · 🔁 Equivalencia = experiencia correspondiente en el otro plan.
+    <div class="ret-lg">
+      <span><em style="background:var(--bas-d)"></em>✅ Equivalencia directa</span>
+      <span><em style="background:var(--amber)"></em>⚠️ Equivalencia parcial (dictamina Secretaría)</span>
+      <span><em style="background:var(--info)"></em>🆕 Nueva en Plan 2025</span>
+      <span><em style="background:var(--danger)"></em>⛔ Sin equivalente</span>
+    </div>
+    <div style="margin-top:7px"><b>⚠️ Aviso:</b> documento orientativo de apoyo a la tutoría. La equivalencia definitiva y el dictamen de antecedentes se tramitan en la Secretaría de la Facultad. Verifica siempre la oferta oficial en www.uv.mx/veracruz/fcc/programacion-academica</div>
+    <div style="margin-top:5px">Herramienta de apoyo diseñada por el Dr. Alfredo Reyes Gutiérrez para sus Tutorados · Facultad de Ciencias y Técnicas de la Comunicación · Universidad Veracruzana</div>
+  </div></div>`;
+  return h;
+}
+const PRINTS=[
+  {p:'04',m:'E',t:'Plan 2004 · Escolarizado',s:'Lunes a viernes',ic:'🏫'},
+  {p:'04',m:'A',t:'Plan 2004 · Abierto',s:'Sábados por bloques',ic:'📚'},
+  {p:'25',m:'E',t:'Plan 2025 · Escolarizado',s:'Lunes a viernes',ic:'🏫'},
+  {p:'25',m:'A',t:'Plan 2025 · Abierto',s:'Sábados por bloques',ic:'📚'}
+];
+function printCardsHTML(){
+  return PRINTS.map(x=>{
+    const L=x.p==='04'?P04:P25,tot=AREA_TOTALS[x.p];
+    return `<div class="pc p${x.p} m-${x.m}">
+      <div class="ph"><div class="pi">${x.ic}</div><div><h3>${x.t}</h3><div class="sm">${x.s}</div></div></div>
+      <ul>
+        <li>🧩 <b>Básica</b> · ${tot.BAS.min} cr mínimos</li>
+        <li>🔬 <b>Disciplinaria</b> · ${tot.DIS.min} cr mínimos</li>
+        <li>🎯 <b>Terminal</b> · ${tot.TER.min} cr de ${tot.TER.cr} ofertados${x.p==='25'?' · 3 acentuaciones':''}</li>
+        <li>🎲 <b>Elección libre</b> · ${tot.LIB.min} cr</li>
+        <li>📌 Antecedentes y 🔁 equivalencias incluidos</li>
+        <li>✍️ Columna para ${x.m==='E'?'horario y salón':'bloque y turno'}</li>
+      </ul>
+      <div class="acts">
+        <button class="pv" onclick="preview('${x.p}','${x.m}')">👁️ Vista previa</button>
+        <button class="pp" onclick="preview('${x.p}','${x.m}',true)">🖨️ Imprimir</button>
+      </div></div>`;
+  }).join('');
+}
+let curPrint={p:'04',m:'E'};
+function preview(p,m,print){
+  curPrint={p,m};
+  const x=PRINTS.find(v=>v.p===p&&v.m===m);
+  $('pvTitle').textContent='📄 '+x.t;
+  $('pvBody').innerHTML=retHTML(p,m);
+  $('printRoot').innerHTML=retHTML(p,m);
+  closeModal('mPick');
+  $('mPrint').classList.add('on');
+  document.body.style.overflow='hidden';
+  if(print)setTimeout(doPrint,320);
+}
+function doPrint(){
+  $('printRoot').innerHTML=retHTML(curPrint.p,curPrint.m);
+  setTimeout(()=>{window.print()},90);
+}
+function openPrintPicker(){$('pickGrid').innerHTML=printCardsHTML();$('mPick').classList.add('on');document.body.style.overflow='hidden'}
+function closeModal(id){$(id).classList.remove('on');if(!$('drawer').classList.contains('on'))document.body.style.overflow=''}
+
+/* ══════════ CADENAS ══════════ */
+function renderChains(){
+  const out=[];
+  [['04',P04],['25',P25]].forEach(([plan,L])=>{
+    L.forEach(e=>{
+      if(!e.ant.length)return;
+      const ch=buildChain(e,plan);
+      if(ch.length<2)return;
+      out.push({plan,ch,cr:e.cr});
+    });
+  });
+  const uniq=[];const seen=new Set();
+  out.sort((a,b)=>b.ch.length-a.ch.length||a.plan.localeCompare(b.plan)).forEach(o=>{
+    const k=o.plan+'|'+o.ch.join('>');if(seen.has(k))return;seen.add(k);uniq.push(o);
+  });
+  $('chains').innerHTML=uniq.map(o=>`<div class="chain">
+    <div class="ch"><b>📌 Ruta de ${o.ch.length} pasos</b><span class="pl">PLAN ${o.plan==='04'?'2004':'2025'}</span></div>
+    ${o.ch.map((n,i)=>{const t=findEE(o.plan,n);return `<div class="step ${i===o.ch.length-1?'last':''}"><span class="dot">${i+1}</span><span class="nm">${esc(pretty(n))}</span><span class="cr">${t?t.cr+' cr':''}</span></div>`+(i<o.ch.length-1?'<div class="arrows">↓</div>':'')}).join('')}
+  </div>`).join('');
 }
 
-function mostrarEquivalenciaHTML(origen, destino, labelOrigen, labelDestino, emojiOrigen, emojiDestino, flecha) {
-  const cambioCred = origen.cr !== destino.cr;
-  const cambioArea = origen.area !== destino.area;
-
-  let html = renderCard(labelOrigen, origen.nombre, origen.cr, origen.area, false, emojiOrigen);
-  html += `<div class="arrow">${flecha}</div>`;
-  html += renderCard(labelDestino, destino.nombre, destino.cr, destino.area, true, emojiDestino);
-
-  if (cambioCred || cambioArea) {
-    html += `<div class="card transferencia">
-      <h3>⚠️ Observaciones</h3>
-      <p>
-        ${cambioCred ? `• Los créditos cambian de <strong>${origen.cr}</strong> a <strong>${destino.cr}</strong>.<br>` : ''}
-        ${cambioArea ? `• El área cambia de <strong>${origen.area}</strong> a <strong>${destino.area}</strong>.` : ''}
-      </p>
-      <p style="margin-top:8px;font-size:0.9em;">Consulta con Control Escolar para validar la aplicación.</p>
-    </div>`;
-  }
-  return html;
+/* ══════════ EXPORT ══════════ */
+function exportCSV(){
+  const list=S.dir==='both'?P04:filtered();
+  const plan=S.dir==='both'?'04':srcPlan();
+  const rows=[['Plan','Area de formacion','Acentuacion','Experiencia Educativa','Creditos','Antecedentes','Equivalencia otro plan','Tipo de equivalencia']];
+  list.forEach(e=>rows.push([plan==='04'?'2004':'2025',AREAS[e.a].n,e.ac||'—',pretty(e.n),e.cr,
+    e.ant.length?e.ant.map(pretty).join(' + '):'Ninguno',
+    e.eq.length?e.eq.map(pretty).join(' · '):'Sin equivalente',TLAB[e.t].replace(/^[^\s]+\s/,'')]));
+  const csv=rows.map(r=>r.map(c=>'"'+String(c==null?'':c).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='equivalencias-antecedentes-plan'+(plan==='04'?'2004':'2025')+'.csv';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  toast('CSV descargado 📥');
 }
 
-// Inicializar
-actualizarVista();
+/* ══════════ CONTROLES ══════════ */
+function resetAll(){
+  S.q='';S.area='';S.ac='';S.eq='';S.sort='area';S.onlyAnt=false;S.onlyDir=false;S.view='cards';S.dens='comoda';
+  $('q').value='';$('fArea').value='';$('fAc').value='';$('fEq').value='';$('fSort').value='area';
+  $('tAnt').checked=false;$('tDir').checked=false;$('fView').value='cards';$('fDens').value='comoda';
+  render();toast('Filtros restablecidos ↺');
+}
+function fillAc(){
+  const L=srcList();
+  const acs=[...new Set(L.map(e=>e.ac).filter(Boolean))];
+  $('fAc').innerHTML='<option value="">Todas</option>'+acs.map(a=>`<option value="${esc(a)}">🎬 ${esc(a)}</option>`).join('');
+  $('fAc').disabled=!acs.length;
+  if(!acs.includes(S.ac)){S.ac='';$('fAc').value=''}
+}
+function setDir(d){
+  S.dir=d;
+  document.querySelectorAll('#segDir button').forEach(b=>b.classList.toggle('on',b.dataset.d===d));
+  fillAc();render();
+}
+function initStats(){
+  $('stTot').textContent=P04.length+P25.length;
+  $('stEq').textContent=P04.filter(e=>e.t==='directa'&&e.eq.length).length;
+  $('stAnt').textContent=P04.filter(e=>e.ant.length).length+P25.filter(e=>e.ant.length).length;
+  $('stNew').textContent=P25.filter(e=>e.t==='nueva').length;
+}
+
+/* ══════════ INIT ══════════ */
+$('segDir').addEventListener('click',ev=>{const b=ev.target.closest('button');if(b)setDir(b.dataset.d)});
+$('q').addEventListener('input',e=>{S.q=e.target.value;render()});
+$('fArea').addEventListener('change',e=>{S.area=e.target.value;render()});
+$('fAc').addEventListener('change',e=>{S.ac=e.target.value;render()});
+$('fEq').addEventListener('change',e=>{S.eq=e.target.value;render()});
+$('fSort').addEventListener('change',e=>{S.sort=e.target.value;render()});
+$('fView').addEventListener('change',e=>{S.view=e.target.value;render()});
+$('fDens').addEventListener('change',e=>{S.dens=e.target.value;render()});
+$('tAnt').addEventListener('change',e=>{S.onlyAnt=e.target.checked;render()});
+$('tDir').addEventListener('change',e=>{S.onlyDir=e.target.checked;render()});
+$('burger').addEventListener('click',()=>$('tnav').classList.toggle('on'));
+document.querySelectorAll('.tnav a').forEach(a=>a.addEventListener('click',()=>{
+  $('tnav').classList.remove('on');
+  document.querySelectorAll('.tnav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');
+}));
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',ev=>{if(ev.target===m)closeModal(m.id)}));
+document.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'){closeDrawer();closeModal('mPrint');closeModal('mPick')}
+});
+const secs=['explorar','reticulas','cadenas','ayuda'];
+window.addEventListener('scroll',()=>{
+  let cur=secs[0];
+  secs.forEach(id=>{const el=$(id);if(el&&el.getBoundingClientRect().top<=180)cur=id});
+  document.querySelectorAll('.tnav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+initStats();fillAc();render();renderChains();
+$('printCards').innerHTML=printCardsHTML();
 </script>
 </body>
 </html>
