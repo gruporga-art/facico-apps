@@ -277,6 +277,20 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
   background:linear-gradient(132deg,#9061f2,var(--block-d));box-shadow:0 9px 24px rgba(124,58,237,.34);touch-action:manipulation;font-family:inherit}
 .eval-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(124,58,237,.46)}
 .eval-btn:active{transform:scale(.97)}
+.frate{display:flex;align-items:center;justify-content:center;gap:10px 14px;flex-wrap:wrap;padding:0 0 16px;margin-bottom:16px;border-bottom:1px solid var(--line-2)}
+.frate .q{font-size:.85rem;font-weight:700;color:var(--ink-2);line-height:1.3}
+.stars{display:flex;gap:2px;align-items:center}
+.stars button{background:none;border:none;cursor:pointer;font-size:1.45rem;line-height:1;padding:3px 3px;color:#cfd9e6;transition:transform .14s,color .14s;touch-action:manipulation;font-family:inherit}
+.stars button.lit{color:#f0a92b}
+.stars button:active{transform:scale(.9)}
+@media(hover:hover){.stars button:hover{transform:scale(1.16)}}
+.frate .sc{font-size:.85rem;font-weight:900;color:var(--navy-500);font-variant-numeric:tabular-nums;white-space:nowrap}
+.frate .sc small{font-weight:700;color:var(--ink-3);font-size:.74rem}
+.frate .thanks{font-size:.74rem;font-weight:800;color:var(--uv-green-d);background:#e6f7ec;border:1px solid #b9e6c8;padding:2px 10px;border-radius:20px}
+.fvis{display:inline-flex;align-items:center;gap:8px}
+.fvis img{height:18px;border-radius:4px;display:block}
+.fvis .vf{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(120deg,var(--uv-green),var(--mint));color:#04240f;font-weight:900;font-size:.74rem;padding:3px 10px;border-radius:20px}
+.fvis .vl{font-size:.76rem;color:var(--ink-3);font-weight:700}
 
 .modal{display:none;position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(5px);z-index:900;align-items:center;justify-content:center;padding:16px}
 .modal.on{display:flex;animation:fade .24s}
@@ -546,6 +560,17 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
   </div>
 
   <footer class="foot">
+    <div class="frate">
+      <span class="q">¿Qué tan útil te resultó esta herramienta?</span>
+      <div class="stars" id="stars"></div>
+      <span class="sc" id="rscore">5.0 / 5 <small>(1 voto)</small></span>
+      <span class="thanks" id="rthanks" style="display:none"></span>
+      <span class="fvis">
+        <img id="vbadge" alt="Contador de visitas" src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgruporga-art.github.io%2Ffacico-apps%2Fplaneadorhorarios%2F&countColor=%2328AD56&style=flat">
+        <span class="vf" id="vfall" style="display:none">👁️ <span id="vnum">0</span></span>
+        <span class="vl">visitas</span>
+      </span>
+    </div>
     <p><strong>Facultad de Ciencias y Técnicas de la Comunicación</strong> · Universidad Veracruzana</p>
     <p>Consulta las equivalencias entre las E.E. del plan 2004 y 2025 en <a href="https://gruporga-art.github.io/facico-apps/equivalencias/" target="_blank" rel="noopener">Equivalencias por Experiencias Educativas</a>.</p>
     <p>Verifica siempre la oferta oficial en <a href="https://www.uv.mx/veracruz/fcc/programacion-academica" target="_blank" rel="noopener">www.uv.mx/veracruz/fcc/programacion-academica</a>.</p>
@@ -1327,6 +1352,41 @@ async function sendEval(ev){
     toast('Evaluación guardada 📦','warn');
   }
 }
+
+/* ══════════ ESTRELLAS ══════════ */
+const RK='facico.plan.rate';
+function rateState(){try{const s=JSON.parse(localStorage.getItem(RK)||'null');if(s&&s.n)return s}catch(e){}return{sum:5,n:1,mine:0}}
+(function(){
+  const box=$('stars');
+  box.innerHTML=[1,2,3,4,5].map(i=>`<button type="button" data-v="${i}" aria-label="Calificar con ${i} estrellas" title="${i} de 5">★</button>`).join('');
+  const btns=[...box.querySelectorAll('button')];
+  function paint(hover){
+    const s=rateState(),avg=s.sum/s.n,show=hover||s.mine||Math.round(avg);
+    btns.forEach((b,i)=>b.classList.toggle('lit',i+1<=show));
+    $('rscore').innerHTML=avg.toFixed(1)+' / 5 <small>('+s.n+' voto'+(s.n===1?'':'s')+')</small>';
+    const th=$('rthanks');
+    if(s.mine){th.style.display='inline-block';th.textContent='¡Gracias! '+s.mine+' ★'}else th.style.display='none'}
+  /* no se reconstruyen los botones al pasar el cursor, para que el toque funcione en smartphone */
+  btns.forEach(b=>{
+    b.addEventListener('mouseenter',()=>paint(+b.dataset.v));
+    b.addEventListener('click',()=>{const v=+b.dataset.v,st=rateState();
+      if(st.mine)st.sum+=v-st.mine;else{st.sum+=v;st.n++}
+      st.mine=v;try{localStorage.setItem(RK,JSON.stringify(st))}catch(e){}
+      paint();toast('¡Gracias! Calificaste con '+v+' ★')})});
+  box.addEventListener('mouseleave',()=>paint());
+  paint();
+})();
+
+/* ══════════ VISITAS ══════════ */
+(function(){
+  const VK='facico.plan.visits';let n=0;
+  try{n=parseInt(localStorage.getItem(VK)||'0',10)||0}catch(e){}
+  try{if(!sessionStorage.getItem('facico.plan.counted')){n++;localStorage.setItem(VK,String(n));sessionStorage.setItem('facico.plan.counted','1')}}catch(e){n++}
+  $('vnum').textContent=n.toLocaleString('es-MX');
+  const img=$('vbadge'),fail=()=>{img.style.display='none';$('vfall').style.display='inline-flex'};
+  img.addEventListener('error',fail);
+  setTimeout(()=>{if(!img.complete||img.naturalWidth===0)fail()},4500);
+})();
 
 /* ══════════ INIT ══════════ */
 (function purgeLegacy(){
